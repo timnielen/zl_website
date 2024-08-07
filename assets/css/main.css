@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply bg-gradient-to-t from-sky-300 to-sky-50 h-svh;
+}
