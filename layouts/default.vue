@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class="relative">
       <AppHeader />
-      <div class="p-3 pb-24">
-      <div class="max-w-7xl lg:mx-auto bg-white shadow-lg rounded-md p-5">
+      <div class=" pb-24">
+      <main class="max-w-7xl lg:mx-auto  md:rounded-md py-5 p-2">
         <slot />
-      </div>
+      </main>
       </div>
       <AppFooter />
     </div>
