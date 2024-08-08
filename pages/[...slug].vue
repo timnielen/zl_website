@@ -2,9 +2,9 @@
     <div class="grid gap-5">
         <UCarousel ref="carouselRef" v-slot="{ item }" :items="carouselImages" :ui="{ item: 'basis-full' }"
             class="md:rounded-lg shadow-lg overflow-hidden" indicators>
-                <NuxtImg :src="item.src" class="object-cover md:aspect-[2/1] aspect-[3/4]" :class="item.alignment" draggable="false"/>
+                <NuxtImg :src="item.src" class="object-cover md:aspect-[2/1] aspect-[3/4] h-full" :class="item.alignment" draggable="false"/>
         </UCarousel>
-        <article class="bg-white shadow-lg p-5 font-playpen md:columns-2 rounded-lg text-black">
+        <article class="bg-white shadow-lg p-5 md:columns-2 rounded-lg text-black">
             <ContentDoc/>
         </article>
     </div>

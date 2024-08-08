@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        playpen: ["Playpen Sans", "cursive"],
+        playpen: ["Playpen Sans", "system-ui"],
       },
     }
   },
