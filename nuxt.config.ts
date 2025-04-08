@@ -24,9 +24,9 @@ export default defineNuxtConfig({
     // The private keys which are only available server-side
     // apiSecret: '123',
     // Keys within public are also exposed client-side
-    public: {
+    // public: {
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
-    }
+    // }
   }
 })

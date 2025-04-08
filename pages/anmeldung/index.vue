@@ -117,23 +117,23 @@
                 description="Alle Plätze außer dem Fahrersitz sollen angegeben werden" name="places">
                 <UFormGroup label="Hinfahrt" name="arrival_places">
                     <USelect placeholder="bitte auswählen" v-model="state.arrival_places"
-                        :options="[0, 1, 2, 3, 4, 5]" />
+                        :options="places" />
                 </UFormGroup>
 
                 <UFormGroup label="Rückfahrt" name="return_places">
                     <USelect placeholder="bitte auswählen" v-model="state.return_places"
-                        :options="[0, 1, 2, 3, 4, 5]" />
+                        :options="places" />
                 </UFormGroup>
             </UFormGroup>
 
             <UFormGroup
                 label="Wir bekommen eventuell Probleme mit der Unterbringung des gesamten Gepäcks und bitten um Umverteilung. Bzw. wir haben voraussichtlich noch ausreichen Platz für das Gepäck weiterer Kinder, welche nicht bei uns mitfahren."
                 name="baggage">
-                <UFormGroup label="Hinfahrt" name="arrival_baggage">
+                <UFormGroup label="Hinfahrt" name="arrival_baggage" required>
                     <USelect placeholder="bitte auswählen" v-model="state.arrival_baggage" :options="baggage" />
                 </UFormGroup>
 
-                <UFormGroup label="Rückfahrt" name="return_baggage">
+                <UFormGroup label="Rückfahrt" name="return_baggage" required>
                     <USelect placeholder="bitte auswählen" v-model="state.return_baggage" :options="baggage" />
                 </UFormGroup>
             </UFormGroup>
@@ -177,7 +177,7 @@
             </UFormGroup>
 
             <UFormGroup name="consent" required>
-                <UInput type="file" @change="state.consent = $event[0]" />
+                <UInput type="file" @change="uploadFile" accept="image/jpeg, image/png, application/pdf" />
                 <template #label>
                     Lesen Sie nun bitte die
                     <a href="/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf"
@@ -211,143 +211,95 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
 import * as v from 'valibot'
-import { createClient } from '@supabase/supabase-js'
-const runtimeConfig = useRuntimeConfig()
-const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.public.SUPABASE_KEY)
-
-const genders = ['männlich', 'weiblich', 'divers'] as const;
-const swimLevels = ["Schwimmer/in", "Schwimmanfänger/in", "Nichtschwimmer/in"] as const;
-const foodOptions = ["alles", "vegan", "vegetarisch", "kein Schweinefleisch"] as const;
-const diseases = [
-    "Herzbeschwerden, bekannte Herzfehler, HerzkrankheitenBlutdruckanomalien",
-    "Asthma, Bronchitis oder ähnliche Beschwerden der Atemwege",
-    "Diabetes oder andere Stoffwechselerkrankungen",
-    "Schwindelzustände, Ohnmachtsanfälle, Migräne, häufig starke Kopfschmerzen",
-    "Epilepsie",
-    "Allergien (auch Lebensmittel- und/oder Medikamentenallergie)",
-    "Sonstige"
-] as const;
-const yesno = [{ value: true, label: "Ja" }, { value: false, label: "Nein" }]
-const arrival = [
-    { value: "Selbst (und hat noch PLATZ frei)", label: "Ich fahre mein Kind selber und habe noch Plätze frei" },
-    { value: "Selbst (und hat KEINEN platz mehr frei)", label: "Ich fahre mein Kind selber, habe aber leider KEINE Plätze mehr frei" },
-    { value: "Fährt WOANDERS mit", label: "Es ist bereits abgesprochen, dass mein Kind bei Freunden mitfahren wird (bitte unten benennen)" },
-    { value: "BRAUCHT Mitfahrgelegenheit", label: "Mein Kind hat noch keine Mitfahrgelegenheit" },
-] as const;
-const baggage = [
-    { value: "noch extra platz", label: "Ich habe noch Platz für Gepäck zusätzlich zu dem der Kinder, welche ich mitnehme" },
-    { value: "passt perfekt", label: "Bei mir reicht der Platz genau für das Gepäck der Kinder, welche ich mitnehme" },
-    { value: "nicht genug platz", label: "Ich habe nicht genug Platz für das Gepäck der Kinder, welche ich mitnehme und bitte um Umverteilung" },
-    { value: "ich fahre nicht", label: "Ich selber fahre keine Kinder" },
-] as const;
-const photos = [
-    { value: "Ja, veröffentlichen", label: "Bilder/Videos gemacht und auf den sozialen Medien oder der Webseite der KJG Ortsgruppe Milbertshofen veröffentlicht werden" },
-    { value: "Ja, NICHT veröffentlichen", label: "Bilder/Videos gemacht, aber NICHT im Internet veröffentlicht werden." },
-    { value: "Nein", label: "KEINE Bilder/Videos gemacht werden" },
-] as const;
-
-const schema = v.object({
-    name: v.pipe(v.string(), v.minLength(2, 'Der Vorname muss mindestens 2 Zeichen lang sein')),
-    sirname: v.pipe(v.string(), v.minLength(2, 'Der Nachname muss mindestens 2 Zeichen lang sein')),
-    gender: v.pipe(v.string(), v.picklist(genders, 'Bitte wählen Sie ein Geschlecht aus')),
-    birthday: v.pipe(v.string(), v.regex(/^\d{4}-\d{2}-\d{2}$/, 'Bitte geben Sie ein gültiges Datum ein')),
-    address: v.pipe(v.string(), v.minLength(5, 'Bitte geben Sie eine gültige Adresse ein')),
-    email: v.pipe(v.string(), v.email('Bitte geben Sie eine gültige E-Mail-Adresse ein')),
-    swimmer: v.pipe(v.string(), v.picklist(swimLevels, 'Bitte wählen Sie eine Schwimmstufe aus')),
-    food: v.pipe(v.string(), v.picklist(foodOptions, 'Bitte wählen Sie eine Ernährungsweise aus')),
-    diseases: v.optional(v.array(v.string())),
-    disease_description: v.optional(v.string()),
-    wound_care: v.boolean('Bitte wählen Sie eine Option'),
-    pull_ticks: v.boolean('Bitte wählen Sie eine Option'),
-    vaccination: v.boolean('Bitte wählen Sie eine Option'),
-    vaccination_description: v.optional(v.string()),
-    contact_doctor: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie die Kontaktdaten des Hausarztes ein')),
-    arrival: v.pipe(v.string(), v.picklist(arrival.map(p => p.value), 'Bitte wählen Sie eine Option')),
-    emergency_name: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie den Notfallkontakt-Namen ein')),
-    emergency_relationship: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie die Beziehung an')),
-    emergency_phone_number: v.pipe(v.string(), v.regex(/^\+?\d{7,15}$/, 'Bitte geben Sie eine gültige Telefonnummer ein')),
-    emergency_email: v.pipe(v.string(), v.email('Bitte geben Sie eine gültige E-Mail-Adresse ein')),
-    photos: v.pipe(v.string(), v.picklist(photos.map(p => p.value), 'Bitte wählen Sie eine Option aus')),
-    consent: v.pipe(
-        v.file('Bitte laden Sie die Einverständniserklärung hoch'),
-        v.mimeType(['image/jpeg', 'image/png', 'application/pdf'], 'Bitte lade nur JPEG, PNG, oder PDF Dateien hoch'),
-        v.maxSize(1024 * 1024 * 5, 'Die Datei muss unter 5 MB groß sein')
-    ),
-    fitness: v.literal(true, "Bitte geben Sie uns hier Ihre Einverständnins"),
-    group_activity_consent: v.literal(true, "Bitte geben Sie uns hier Ihre Einverständnins"),
-    privacy_agreement: v.literal(true, "Bitte geben Sie uns hier Ihre Einverständnins"),
-})
+import { schema, arrival, baggage, diseases, foodOptions, genders, photos, swimLevels, yesno, places } from '@/types/registration'
+import type { Schema } from '@/types/registration'
 
 // Create reactive state
-const state = reactive({
-    name: '',
-    sirname: '',
-    gender: '',
-    birthday: '',
-    address: '',
-    email: '',
-    swimmer: '',
-    food: '',
+const state = reactive<Record<string, any>>({
+    name: 'tim',
+    sirname: 'nielen',
+    gender: 'männlich',
+    birthday: '2002-08-20',
+    address: 'ingolstädter str 111a',
+    email: 'tim.nielen@online.de',
+    swimmer: 'Schwimmer/in',
+    food: 'vegetarisch',
     diseases: [], // Can be empty or contain selected options
-    disease_description: '',
-    wound_care: '',
-    pull_ticks: '',
-    vaccination: '',
-    vaccination_description: '',
-    emergency_name: '',
-    emergency_relationship: '',
-    emergency_phone_number: '',
-    emergency_email: '',
-    photos: '',
-    // consent: null, // For file upload
-    contact_doctor: '',
+    disease_description: undefined,
+    wound_care: true,
+    pull_ticks: true,
+    vaccination: true,
+    vaccination_description: undefined,
+    emergency_name: 'doro nielen',
+    emergency_relationship: 'mutter',
+    emergency_phone_number: '0123456789',
+    emergency_email: 'doro.nielen@online.de',
+    photos: 'Ja, veröffentlichen',
+    contact_doctor: 'abc',
 
     // Travel-related fields
-    arrival: '',
-    arrival_driver: '',
-    arrival_places: null,
-    arrival_baggage: '',
-    return_driver: '',
-    return_places: null,
-    return_baggage: '',
+    arrival: 'Selbst (und hat noch PLATZ frei)',
+    arrival_driver: undefined,
+    arrival_places: undefined,
+    arrival_baggage: 'passt perfekt',
+    return_driver: undefined,
+    return_places: undefined,
+    return_baggage: 'passt perfekt',
 
     // Additional checkboxes
-    fitness: false,
-    group_activity_consent: false,
-    privacy_agreement: false,
-
-    comments: '',
+    fitness: true,
+    group_activity_consent: true,
+    privacy_agreement: true,
+    comments: undefined,
+    consent: null, // For file upload
+    consent_filename: undefined
 })
 
 watch(state, () => {
     console.log(state)
 })
 
-// function test(v) {
-//     console.log(v)
-// }
+function uploadFile(files: FileList) {
+    state.consent_filename = files[0].name
+    state.consent = files[0]
+}
 
-type Schema = v.InferOutput<typeof schema>
 const toast = useToast()
 // const supabase = useSupabaseClient()
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    console.log(event.data)
-    let payload: Record<string, any> = {}
-    for (const key in event.data) {
-        if (key != "consent" && key != "deseases") {
-            payload[key] = event.data[key]
-        }
-    }
-    console.log("test", payload)
     toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
     console.log(event.data)
-    try {
-        const result = await supabase
-            .from("Registrations")
-            .insert(payload)
-        console.log(result)
-    } catch (e) {
-        console.error("error", e)
+
+    const body: Record<string, any> = {}
+
+    for (const [key, value] of Object.entries(event.data)) {
+        if (key == "consent")
+            continue
+        body[key] = value
+    }
+    const filename = body.name + "_" + body.sirname + "_" + body["consent_filename"]
+
+    const form_data = new FormData()
+    form_data.append(filename, event.data["consent"] as Blob)
+
+    let result = await $fetch('/api/upload', {
+        method: 'POST',
+        body: form_data,
+    })
+    if (result.error) {
+        console.error(result.error)
+        alert("Die Datei konnte nicht hochgeladen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.")
+        return
+    }
+    body["consent_filename"] = result.data?.path
+    result = await $fetch('/api/register', {
+        method: 'POST',
+        body: body,
+    })
+    if (result.error) {
+        console.error(result.error)
+        alert("Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.")
+        return
     }
 }
 

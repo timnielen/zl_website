@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss"
 
 body {
     @apply bg-gradient-to-t from-sky-300 to-sky-50 h-full min-h-svh font-playpen dark:from-slate-800 dark:to-gray-950 ;
