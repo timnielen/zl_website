@@ -1,81 +1,82 @@
 <template>
-    <div>
+    <div class="bg-white p-5 rounded-lg shadow-lg ">
         <h1 class="text-green-600 text-2xl mb-2">Anmeldung</h1>
-        <UForm :schema="v.safeParser(schema)" :state="state" class="space-y-4" @submit="onSubmit">
+        <UForm :schema="v.safeParser(schema)" :state="state" class="space-y-4 grid gap-2 " @submit="onSubmit">
             <h2 class="text-lg">
                 Allgemeine Informationen zum teilnehmenden Kind
             </h2>
-            <UFormGroup label="Vorname" name="name" required>
-                <UInput v-model="state.name" />
-            </UFormGroup>
-            <UFormGroup label="Nachname" name="sirname" required>
-                <UInput v-model="state.sirname" />
-            </UFormGroup>
-            <UFormGroup label="Geschlecht" name="gender" required>
-                <USelect placeholder="bitte auswählen" v-model="state.gender" :options="genders" />
-            </UFormGroup>
-            <UFormGroup label="Geburtsdatum" name="birthday" required>
-                <UInput v-model="state.birthday" type="date" />
-            </UFormGroup>
-            <UFormGroup label="Adresse" name="address" description="Straße, Hausnummer, Postleitzahl, Ort" required>
-                <UInput v-model="state.address" />
-            </UFormGroup>
-            <UFormGroup label="Email" name="email" required
-                description="An diese E-Mail senden wir alle weiteren Informationen und die Einladung fürs nächste Jahr">
-                <UInput v-model="state.email" />
-            </UFormGroup>
 
-            <UFormGroup label="Fitness" name="fitness" required>
+            <UFormField label="Vorname" name="name" required>
+                <UInput v-model="state.name" class="w-full" />
+            </UFormField>
+            <UFormField label="Nachname" name="sirname" required>
+                <UInput v-model="state.sirname" class="w-full" />
+            </UFormField>
+            <UFormField label="Geschlecht" name="gender" required>
+                <USelect placeholder="bitte auswählen" v-model="state.gender" :items="genders" class="w-full" />
+            </UFormField>
+            <UFormField label="Geburtsdatum" name="birthday" required>
+                <UInput v-model="state.birthday" type="date" class="w-full" />
+            </UFormField>
+            <UFormField label="Adresse" name="address" description="Straße, Hausnummer, Postleitzahl, Ort" required>
+                <UInput v-model="state.address" class="w-full" />
+            </UFormField>
+            <UFormField label="Email" name="email" required
+                description="An diese E-Mail senden wir alle weiteren Informationen und die Einladung fürs nächste Jahr">
+                <UInput v-model="state.email" class="w-full" />
+            </UFormField>
+
+            <UFormField label="Fitness" name="fitness" required>
                 <UCheckbox v-model="state.fitness"
                     label="Der/Die Teilnehmer/in ist in einer gesunden körperlichen und psychischen Verfassung und kann und darf grundsätzlich an Freizeitaktivitäten wie Wandern, Sport, Geländespiele, Schwimmbadbesuch etc. uneingeschränkt teilnehmen" />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Schwimmlevel" name="swimmer" required description="Der/Die Teilnehmende ist...">
-                <USelect placeholder="bitte auswählen" v-model="state.swimmer" :options="swimLevels" />
-            </UFormGroup>
-            <UFormGroup label="Essen" name="food" required description="Der/Die Teilnehmende isst...">
-                <USelect placeholder="bitte auswählen" v-model="state.food" :options="foodOptions" />
-            </UFormGroup>
-            <UFormGroup label="Erkrankungen" name="diseases">
-                <USelectMenu multiple placeholder="wähle alle, die zutreffen" v-model="state.diseases"
-                    :options="diseases" />
-            </UFormGroup>
-            <UFormGroup
+            <UFormField label="Schwimmlevel" name="swimmer" required description="Der/Die Teilnehmende ist...">
+                <USelect placeholder="bitte auswählen" v-model="state.swimmer" :items="swimLevels" class="w-full" />
+            </UFormField>
+            <UFormField label="Essen" name="food" required description="Der/Die Teilnehmende isst...">
+                <USelect placeholder="bitte auswählen" v-model="state.food" :items="foodOptions" class="w-full" />
+            </UFormField>
+            <UFormField label="Erkrankungen" name="diseases">
+                <USelectMenu multiple placeholder="wähle alle, die zutreffen" v-model="state.diseases" :items="diseases"
+                    class="w-full" />
+            </UFormField>
+            <UFormField
                 label="Falls bei der vorangegangen Frage mindestens eines ausgewählt wurde, bitten wir um möglichst exakte Beschreibung inkl. der Einnahme benötigter Medikamente diesbezüglich:"
                 name="disease_description">
-                <UTextarea v-model="state.disease_description" />
-            </UFormGroup>
+                <UTextarea v-model="state.disease_description" class="w-full" />
+            </UFormField>
 
-            <UFormGroup required label="Wundversorgung"
+            <UFormField required label="Wundversorgung"
                 description="Oberflächliche Wunden dürfen mit Hilfe von handelsüblichen Desinfektionsmitteln und Wundschnellverband versorgt werden?"
                 name="wound_care">
-                <URadioGroup v-model="state.wound_care" :options="yesno" />
-            </UFormGroup>
+                <URadioGroup v-model="state.wound_care" :items="yesno" />
+            </UFormField>
 
-            <UFormGroup required label="Zecken dürfen gezogen werden?" name="pull_ticks">
-                <URadioGroup v-model="state.pull_ticks" :options="yesno" />
-            </UFormGroup>
+            <UFormField required label="Zecken dürfen gezogen werden?" name="pull_ticks">
+                <URadioGroup v-model="state.pull_ticks" :items="yesno" />
+            </UFormField>
 
-            <UFormGroup required label="Impfstatus"
+            <UFormField required label="Impfstatus"
                 description="Der/Die Teilnehmer/in verfügt über einen ausreichenden Impfschutz (v.a. Tetanus und FSME/Zecken)?"
                 name="vaccination">
-                <URadioGroup v-model="state.vaccination" :options="yesno" />
-            </UFormGroup>
+                <URadioGroup v-model="state.vaccination" :items="yesno" />
+            </UFormField>
 
-            <UFormGroup
+            <UFormField
                 label='Falls bei der vorangegangenen Frage "Nein" ausgewählt wurde, bitten wir um eine genaue Beschreibung des Umfangs des Impfschutzes bzw. um die Information, wenn gar kein Impfschutz besteht:'
                 name="vaccination_description">
-                <UTextarea v-model="state.vaccination_description" />
-            </UFormGroup>
+                <UTextarea v-model="state.vaccination_description" class="w-full" />
+            </UFormField>
 
-            <UFormGroup label="Aufsichtspflicht: Gruppenaktivitäten" name="group_activity_consent" required>
+            <UFormField label="Aufsichtspflicht: Gruppenaktivitäten" name="group_activity_consent" required>
                 <UCheckbox v-model="state.group_activity_consent"
                     label="Der/die Teilnehmer/in darf zusammen mit mindestens zwei weiteren Teilnehmer/innen und dem Wissen der Verantwortlichen ohne Betreuer auch manchmal alleine auf entweder bekannten oder genau gekennzeichneten Wegen gehen? Für diesen Zeitraum sind die Verantwortlichen von der Aufsichtspflicht entbunden." />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Kontaktdaten Hausarzt" name="contact_doctor" required>
-                <UTextarea v-model="state.contact_doctor" />
-            </UFormGroup>
+            <UFormField label="Kontaktdaten Hausarzt" name="contact_doctor" required>
+                <UTextarea v-model="state.contact_doctor" class="w-full" />
+            </UFormField>
 
 
             <h2 class="text-lg">
@@ -96,74 +97,77 @@
                 </span>
             </div>
 
-            <UFormGroup label="Wie kommt Ihr Kind zum Zeltplatz?" name="arrival" required>
-                <USelect placeholder="bitte auswählen" v-model="state.arrival" :options="arrival" />
-            </UFormGroup>
+            <UFormField label="Wie kommt Ihr Kind zum Zeltplatz?" name="arrival" required>
+                <USelect placeholder="bitte auswählen" v-model="state.arrival" :items="arrival" class="w-full" />
+            </UFormField>
 
 
-            <UFormGroup
+            <UFormField
                 label="Wenn bei der vorangegangenen Frage 3. ausgewählt wurde, bitte hier den Namen des/der Fahrers/in angeben, bei welchem/welcher das Kind mitfährt und den Namen des zum/zur Fahrers/in gehörenden teilnehmenden Kindes."
                 name="driver">
-                <UFormGroup label="Fahrer/in Hinfahrt, Name des Kindes" name="arrival_driver">
-                    <UInput v-model="state.arrival_driver" />
-                </UFormGroup>
-                <UFormGroup label="Fahrer/in Rückfahrt, Name des Kindes" name="return_driver">
-                    <UInput v-model="state.return_driver" />
-                </UFormGroup>
-            </UFormGroup>
+                <UFormField label="Fahrer/in Hinfahrt, Name des Kindes" name="arrival_driver">
+                    <UInput v-model="state.arrival_driver" class="w-full" />
+                </UFormField>
+                <UFormField label="Fahrer/in Rückfahrt, Name des Kindes" name="return_driver">
+                    <UInput v-model="state.return_driver" class="w-full" />
+                </UFormField>
+            </UFormField>
 
-            <UFormGroup
+            <UFormField
                 label="Wenn bei der vorangegangenen Frage 1. ausgewählt wurde, bitte hier angeben wie viele Plätze in dem Auto insgesamt (sprich mit dem eigenen Kind) zur Verfügung stehen:"
                 description="Alle Plätze außer dem Fahrersitz sollen angegeben werden" name="places">
-                <UFormGroup label="Hinfahrt" name="arrival_places">
-                    <USelect placeholder="bitte auswählen" v-model="state.arrival_places"
-                        :options="places" />
-                </UFormGroup>
+                <UFormField label="Hinfahrt" name="arrival_places">
+                    <USelect placeholder="bitte auswählen" v-model="state.arrival_places" :items="places"
+                        class="w-full" />
+                </UFormField>
 
-                <UFormGroup label="Rückfahrt" name="return_places">
-                    <USelect placeholder="bitte auswählen" v-model="state.return_places"
-                        :options="places" />
-                </UFormGroup>
-            </UFormGroup>
+                <UFormField label="Rückfahrt" name="return_places">
+                    <USelect placeholder="bitte auswählen" v-model="state.return_places" :items="places"
+                        class="w-full" />
+                </UFormField>
+            </UFormField>
 
-            <UFormGroup
+            <UFormField
                 label="Wir bekommen eventuell Probleme mit der Unterbringung des gesamten Gepäcks und bitten um Umverteilung. Bzw. wir haben voraussichtlich noch ausreichen Platz für das Gepäck weiterer Kinder, welche nicht bei uns mitfahren."
                 name="baggage">
-                <UFormGroup label="Hinfahrt" name="arrival_baggage" required>
-                    <USelect placeholder="bitte auswählen" v-model="state.arrival_baggage" :options="baggage" />
-                </UFormGroup>
+                <UFormField label="Hinfahrt" name="arrival_baggage" required>
+                    <USelect placeholder="bitte auswählen" v-model="state.arrival_baggage" :items="baggage"
+                        class="w-full" />
+                </UFormField>
 
-                <UFormGroup label="Rückfahrt" name="return_baggage" required>
-                    <USelect placeholder="bitte auswählen" v-model="state.return_baggage" :options="baggage" />
-                </UFormGroup>
-            </UFormGroup>
+                <UFormField label="Rückfahrt" name="return_baggage" required>
+                    <USelect placeholder="bitte auswählen" v-model="state.return_baggage" :items="baggage"
+                        class="w-full" />
+                </UFormField>
+            </UFormField>
 
             <h2 class="text-lg">
                 Notfallkontakt
             </h2>
-            <UFormGroup label="Vor und Nachname" name="emergency_name" required>
-                <UInput v-model="state.emergency_name" />
-            </UFormGroup>
-            <UFormGroup label="Grad der Verwandtschaft" name="emergency_relationship" required>
-                <UInput placeholder="z.B. Mutter / Vater" v-model="state.emergency_relationship" />
-            </UFormGroup>
+            <UFormField label="Vor und Nachname" name="emergency_name" required>
+                <UInput v-model="state.emergency_name" class="w-full" />
+            </UFormField>
+            <UFormField label="Grad der Verwandtschaft" name="emergency_relationship" required>
+                <UInput placeholder="z.B. Mutter / Vater" v-model="state.emergency_relationship" class="w-full" />
+            </UFormField>
 
 
-            <UFormGroup label="Telefonnummer" name="emergency_phone_number" required>
-                <UInput type="tel" v-model="state.emergency_phone_number" />
-            </UFormGroup>
+            <UFormField label="Telefonnummer" name="emergency_phone_number" required>
+                <UInput type="tel" v-model="state.emergency_phone_number" class="w-full" />
+            </UFormField>
 
-            <UFormGroup label="E-Mail" name="emergency_email" required>
-                <UInput type="email" v-model="state.emergency_email" />
-            </UFormGroup>
+            <UFormField label="E-Mail" name="emergency_email" required>
+                <UInput type="email" v-model="state.emergency_email" class="w-full" />
+            </UFormField>
 
-            <UFormGroup label="Weitere Angaben / Kommentare (z.B. weitere Notfallkontakte)" name="comments">
-                <UTextarea v-model="state.comments" />
-            </UFormGroup>
+            <UFormField label="Weitere Angaben / Kommentare (z.B. weitere Notfallkontakte)" name="comments">
+                <UTextarea v-model="state.comments" class="w-full" />
+            </UFormField>
 
-            <h2 class="text-lg">
+            <!-- <h2 class="text-lg">
                 Rechtliches
-            </h2>
+            </h2> -->
+            <USeparator label="Rechtliches" class="text-lg" />
 
             <span class="text-sm">
                 Während des Lagers machen wir natürlich viele Bilder. Diese könnt Sie sich beim Nachtreffen gerne
@@ -172,12 +176,13 @@
                 Im Folgenden bitten wir Sie auszuwählen, ob Sie der Aufnahme von Fotos/Videos Ihres Kindes generell
                 zustimmen bzw. ob wir diese auch im Internet veröffentlichen dürfen.
             </span>
-            <UFormGroup required label="Von dem/der Teilnehmenden dürfen " name="photos">
-                <URadioGroup v-model="state.photos" :options="photos" />
-            </UFormGroup>
+            <UFormField required label="Von dem/der Teilnehmenden dürfen " name="photos">
+                <URadioGroup v-model="state.photos" :items="photos" />
+            </UFormField>
 
-            <UFormGroup name="consent" required>
-                <UInput type="file" @change="uploadFile" accept="image/jpeg, image/png, application/pdf" />
+            <UFormField name="consent" required>
+                <UInput type="file" @change="uploadFile" accept="image/jpeg, image/png, application/pdf"
+                    class="w-full" />
                 <template #label>
                     Lesen Sie nun bitte die
                     <a href="/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf"
@@ -186,9 +191,9 @@
                     <a href="/files/Einverständniserklärung_2024.pdf" target="_blank">Einverständniserklärung</a>
                     auszufüllen und im folgenden Feld hochzuladen.
                 </template>
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Datenschutzerklärung" name="privacy_agreement" required>
+            <UFormField label="Datenschutzerklärung" name="privacy_agreement" required>
                 <UCheckbox v-model="state.privacy_agreement">
                     <template #label>
                         <span>Ich habe die
@@ -199,11 +204,14 @@
                         </span>
                     </template>
                 </UCheckbox>
-            </UFormGroup>
+            </UFormField>
 
-            <UButton type="submit">
-                Anmeldung abschicken
-            </UButton>
+            <UFormField>
+                <UButton type="submit">
+                    Anmeldung abschicken
+                </UButton>
+            </UFormField>
+
         </UForm>
     </div>
 </template>
@@ -306,7 +314,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <style scoped>
+@import "tailwindcss";
+
 a {
     @apply text-green-600 underline;
 }
+
+select,
+input {}
 </style>

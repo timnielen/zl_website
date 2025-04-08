@@ -1,11 +1,13 @@
 <template>
-    <div class="grid gap-5">
-        <UCarousel ref="carouselRef" v-slot="{ item }" :items="carouselImages" :ui="{ item: 'basis-full' }"
-            class="md:rounded-lg shadow-lg overflow-hidden" indicators>
-                <NuxtImg :src="item.src" class="object-cover md:aspect-[2/1] aspect-[3/4] h-full" :class="item.alignment" draggable="false"/>
+    <div class="grid gap-5 ">
+        <UCarousel ref="carouselRef" v-slot="{ item }" loop arrows :autoplay="{ delay: 4000 }" :items="carouselImages"
+            :ui="{ item: 'basis-full' }">
+            <NuxtImg :src="item.src" class="object-cover md:aspect-2/1 aspect-3/4 h-full w-full rounded-lg" 
+            :class="item.alignment"
+                draggable="false" />
         </UCarousel>
-        <article class="bg-white shadow-lg p-5 md:columns-2 rounded-lg text-black">
-            <ContentDoc/>
+        <article class="prose bg-white shadow-lg p-5 md:columns-2 rounded-lg text-black">
+            <ContentDoc />
         </article>
     </div>
 </template>
@@ -35,23 +37,14 @@ const carouselImages = [
 const carouselRef = ref()
 
 onMounted(() => {
-  setInterval(() => {
-    if (!carouselRef.value) return
+    setInterval(() => {
+        if (!carouselRef.value) return
 
-    if (carouselRef.value.page === carouselRef.value.pages) {
-      return carouselRef.value.select(0)
-    }
+        if (carouselRef.value.page === carouselRef.value.pages) {
+            return carouselRef.value.select(0)
+        }
 
-    carouselRef.value.next()
-  }, 3000)
+        carouselRef.value.next()
+    }, 3000)
 })
 </script>
-
-<style scoped>
-:deep(h1) {
-    @apply text-3xl text-green-700;
-}
-:deep(h2) {
-    @apply text-lg font-semibold mt-5;
-}
-</style>

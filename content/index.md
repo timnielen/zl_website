@@ -56,7 +56,7 @@ vom 27.07.2024 bis zum
 
 ## Anmeldung
 
-[→ Hier gehts zur Anmeldung.](/anmeldung){.underline.text-green-500}
+[→ Hier gehts zur Anmeldung.](/anmeldung){.link}
 
 ## Was gibt es Neues?
 

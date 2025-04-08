@@ -1,14 +1,15 @@
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [
     '~/assets/css/main.css'
   ],
 
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
+  vite: {
+    plugins: [
+      tailwindcss()
+    ],
   },
 
   compatibilityDate: '2024-08-07',
