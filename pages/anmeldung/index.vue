@@ -1,7 +1,7 @@
 <template>
-    <div class="bg-white p-5 rounded-lg shadow-lg ">
+    <div class=" ">
         <h1 class="text-green-600 text-2xl mb-2">Anmeldung</h1>
-        <UForm :schema="v.safeParser(schema)" :state="state" class="space-y-4 grid gap-2 " @submit="onSubmit">
+        <UForm :schema="schema" :state="state" class="space-y-4 grid gap-2 " @submit="onSubmit">
             <h2 class="text-lg">
                 Allgemeine Informationen zum teilnehmenden Kind
             </h2>
@@ -39,7 +39,7 @@
             </UFormField>
             <UFormField label="Erkrankungen" name="diseases">
                 <USelectMenu multiple placeholder="wähle alle, die zutreffen" v-model="state.diseases" :items="diseases"
-                    class="w-full" />
+                    class="w-full" :search-input="false" />
             </UFormField>
             <UFormField
                 label="Falls bei der vorangegangen Frage mindestens eines ausgewählt wurde, bitten wir um möglichst exakte Beschreibung inkl. der Einnahme benötigter Medikamente diesbezüglich:"
@@ -98,7 +98,7 @@
             </div>
 
             <UFormField label="Wie kommt Ihr Kind zum Zeltplatz?" name="arrival" required>
-                <USelect placeholder="bitte auswählen" v-model="state.arrival" :items="arrival" class="w-full" />
+                <URadioGroup placeholder="bitte auswählen" v-model="state.arrival" :items="arrival" class="w-full" />
             </UFormField>
 
 
@@ -113,9 +113,11 @@
                 </UFormField>
             </UFormField>
 
-            <UFormField
-                label="Wenn bei der vorangegangenen Frage 1. ausgewählt wurde, bitte hier angeben wie viele Plätze in dem Auto insgesamt (sprich mit dem eigenen Kind) zur Verfügung stehen:"
-                description="Alle Plätze außer dem Fahrersitz sollen angegeben werden" name="places">
+            <div class="grid gap-2">
+                <UFormField
+                    label="Wenn bei der vorangegangenen Frage 1. ausgewählt wurde, bitte hier angeben wie viele Plätze in dem Auto insgesamt (sprich mit dem eigenen Kind) zur Verfügung stehen:"
+                    description="Alle Plätze außer dem Fahrersitz sollen angegeben werden" name="places">
+                </UFormField>
                 <UFormField label="Hinfahrt" name="arrival_places">
                     <USelect placeholder="bitte auswählen" v-model="state.arrival_places" :items="places"
                         class="w-full" />
@@ -125,21 +127,22 @@
                     <USelect placeholder="bitte auswählen" v-model="state.return_places" :items="places"
                         class="w-full" />
                 </UFormField>
-            </UFormField>
+            </div>
 
-            <UFormField
-                label="Wir bekommen eventuell Probleme mit der Unterbringung des gesamten Gepäcks und bitten um Umverteilung. Bzw. wir haben voraussichtlich noch ausreichen Platz für das Gepäck weiterer Kinder, welche nicht bei uns mitfahren."
-                name="baggage">
-                <UFormField label="Hinfahrt" name="arrival_baggage" required>
-                    <USelect placeholder="bitte auswählen" v-model="state.arrival_baggage" :items="baggage"
-                        class="w-full" />
+            <div class="grid gap-2">
+                <UFormField label="Wir bekommen eventuell Probleme mit der Unterbringung des gesamten Gepäcks und bitten um Umverteilung.
+                Bzw. wir haben voraussichtlich noch ausreichen Platz für das Gepäck weiterer Kinder, welche nicht bei
+                uns mitfahren.">
+                </UFormField>
+                <UFormField label="Gepäck Hinfahrt" name="arrival_baggage" required>
+                    <URadioGroup v-model="state.arrival_baggage" :items="baggage" class="w-full" />
                 </UFormField>
 
-                <UFormField label="Rückfahrt" name="return_baggage" required>
-                    <USelect placeholder="bitte auswählen" v-model="state.return_baggage" :items="baggage"
-                        class="w-full" />
+                <UFormField label="Gepäck Rückfahrt" name="return_baggage" required>
+                    <URadioGroup v-model="state.return_baggage" :items="baggage" class="w-full" />
                 </UFormField>
-            </UFormField>
+            </div>
+
 
             <h2 class="text-lg">
                 Notfallkontakt
@@ -207,7 +210,7 @@
             </UFormField>
 
             <UFormField>
-                <UButton type="submit">
+                <UButton type="submit" :loading="loading">
                     Anmeldung abschicken
                 </UButton>
             </UFormField>
@@ -234,9 +237,9 @@ const state = reactive<Record<string, any>>({
     food: 'vegetarisch',
     diseases: [], // Can be empty or contain selected options
     disease_description: undefined,
-    wound_care: true,
-    pull_ticks: true,
-    vaccination: true,
+    wound_care: "true",
+    pull_ticks: "true",
+    vaccination: "true",
     vaccination_description: undefined,
     emergency_name: 'doro nielen',
     emergency_relationship: 'mutter',
@@ -263,19 +266,21 @@ const state = reactive<Record<string, any>>({
     consent_filename: undefined
 })
 
-watch(state, () => {
-    console.log(state)
-})
+// watch(state, () => {
+//     console.log(state)
+// })
 
-function uploadFile(files: FileList) {
-    state.consent_filename = files[0].name
-    state.consent = files[0]
+function uploadFile(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target?.files && target.files[0]) {
+        state.consent_filename = target.files[0].name
+        state.consent = target.files[0]
+    }
 }
 
 const toast = useToast()
-// const supabase = useSupabaseClient()
+const loading = ref(false)
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-    toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
     console.log(event.data)
 
     const body: Record<string, any> = {}
@@ -290,25 +295,55 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const form_data = new FormData()
     form_data.append(filename, event.data["consent"] as Blob)
 
-    let result = await $fetch('/api/upload', {
-        method: 'POST',
-        body: form_data,
-    })
-    if (result.error) {
-        console.error(result.error)
-        alert("Die Datei konnte nicht hochgeladen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.")
-        return
+    loading.value = true
+    try {
+        let result = await $fetch('/api/upload', {
+            method: 'POST',
+            body: form_data,
+        })
+        if (result.error) {
+            console.error(result.error)
+            toast.add({
+                title: 'Anmeldung fehlgeschlagen!',
+                description: 'Die Datei konnte nicht hochgeladen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.',
+                color: "error"
+            })
+            loading.value = false
+            return
+        }
+        body["consent_filename"] = result.data?.path
+        result = await $fetch('/api/register', {
+            method: 'POST',
+            body: body,
+        })
+        if (result.error) {
+            console.error(result.error)
+            toast.add({
+                title: 'Anmeldung fehlgeschlagen!',
+                description: 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.',
+                color: "error"
+            })
+            alert("Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.")
+            loading.value = false
+            return
+        }
+    } catch (e) {
+        toast.add({
+            title: 'Anmeldung fehlgeschlagen!',
+            description: 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.',
+            color: "error"
+        })
+        loading.value = false
+        return 
     }
-    body["consent_filename"] = result.data?.path
-    result = await $fetch('/api/register', {
-        method: 'POST',
-        body: body,
+    loading.value = false
+    toast.add({
+        title: 'Anmeldung abgeschlossen!',
+        description: 'Die Anmeldung wurde abgeschlossen. Wir haben eine Bestätigungsmail an ' + body["email"] + " gesandt. Bitte überprüfen Sie Ihr Postfach.",
+        color: 'success',
+        duration: 10000
     })
-    if (result.error) {
-        console.error(result.error)
-        alert("Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.")
-        return
-    }
+    navigateTo('/')
 }
 
 </script>

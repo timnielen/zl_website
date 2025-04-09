@@ -1,5 +1,5 @@
 <template>
-    <div class="grid gap-5 ">
+    <div class="grid gap-5">
         <UCarousel ref="carouselRef" v-slot="{ item }" loop arrows :autoplay="{ delay: 4000 }" :items="carouselImages"
             :ui="{ item: 'basis-full' }">
             <NuxtImg :src="item.src" class="object-cover md:aspect-2/1 aspect-3/4 h-full w-full rounded-lg" 

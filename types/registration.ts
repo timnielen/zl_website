@@ -13,7 +13,7 @@ const diseases = [
     "Allergien (auch Lebensmittel- und/oder Medikamentenallergie)",
     "Sonstige"
 ] as const;
-const yesno = [{ value: true, label: "Ja" }, { value: false, label: "Nein" }]
+const yesno = [{ value: "true", label: "Ja" }, { value: "false", label: "Nein" }]
 const arrival = [
     { value: "Selbst (und hat noch PLATZ frei)", label: "Ich fahre mein Kind selber und habe noch Plätze frei" },
     { value: "Selbst (und hat KEINEN platz mehr frei)", label: "Ich fahre mein Kind selber, habe aber leider KEINE Plätze mehr frei" },
@@ -44,9 +44,9 @@ const row_schema = v.object({
     food: v.pipe(v.string(), v.picklist(foodOptions, 'Bitte wählen Sie eine Ernährungsweise aus')),
     diseases: v.optional(v.array(v.string())),
     disease_description: v.optional(v.string()),
-    wound_care: v.boolean('Bitte wählen Sie eine Option'),
-    pull_ticks: v.boolean('Bitte wählen Sie eine Option'),
-    vaccination: v.boolean('Bitte wählen Sie eine Option'),
+    wound_care: v.pipe(v.any(), v.transform((input) => Boolean(input)), v.boolean('Bitte wählen Sie eine Option')),
+    pull_ticks: v.pipe(v.any(), v.transform((input) => Boolean(input)), v.boolean('Bitte wählen Sie eine Option')),
+    vaccination: v.pipe(v.any(), v.transform((input) => Boolean(input)), v.boolean('Bitte wählen Sie eine Option')),
     vaccination_description: v.optional(v.string()),
     contact_doctor: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie die Kontaktdaten des Hausarztes ein')),
     arrival: v.pipe(v.string(), v.picklist(arrival.map(p => p.value), 'Bitte wählen Sie eine Option')),
