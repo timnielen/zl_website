@@ -12,13 +12,13 @@ export default defineEventHandler(async (event) => {
         console.error(e)
         throw createError({
             statusCode: 400,
-            statusMessage: 'Invalid or missing form data',
+            statusMessage: 'Invalid or missing file data',
         })
     }
     if (!form_data || form_data.length != 1 || !form_data[0].type || !form_data[0].name)
         throw createError({
             statusCode: 400,
-            statusMessage: 'Form data is incomplete',
+            statusMessage: 'File data is incomplete',
         })
 
     // const file = form_data[0].data as Blob
@@ -46,8 +46,17 @@ export default defineEventHandler(async (event) => {
     partial[partial.length-2] += "_" + new Date().getTime()
     filename = partial.join('.')
 
-    return supabase.storage
+    const {data, error} = await supabase.storage
     .from('consent')
     .upload(filename, file)
+    if (error) {
+        console.error(error)
+        throw createError({
+            statusCode: 500,
+            statusMessage: "Couldn't upload file. Please try again later.",
+        })
+    }
 
+    setResponseStatus(event, 201)
+    return data.path
 })

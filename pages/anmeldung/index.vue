@@ -297,40 +297,25 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
     loading.value = true
     try {
-        let result = await $fetch('/api/upload', {
+        body["consent_filename"] = await $fetch('/api/upload', {
             method: 'POST',
             body: form_data,
         })
-        if (result.error) {
-            console.error(result.error)
-            toast.add({
-                title: 'Anmeldung fehlgeschlagen!',
-                description: 'Die Datei konnte nicht hochgeladen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.',
-                color: "error"
-            })
-            loading.value = false
-            return
-        }
-        body["consent_filename"] = result.data?.path
-        result = await $fetch('/api/register', {
+        await $fetch('/api/register', {
             method: 'POST',
             body: body,
         })
-        if (result.error) {
-            console.error(result.error)
-            toast.add({
-                title: 'Anmeldung fehlgeschlagen!',
-                description: 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.',
-                color: "error"
-            })
-            alert("Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.")
-            loading.value = false
-            return
-        }
     } catch (e) {
+        let description = ''
+        if(e.status === 400) {
+            description = 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.'
+        }
+        else {
+            description = 'Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+        }
         toast.add({
             title: 'Anmeldung fehlgeschlagen!',
-            description: 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre eingaben und versuchen Sie es erneut.',
+            description: description,
             color: "error"
         })
         loading.value = false
