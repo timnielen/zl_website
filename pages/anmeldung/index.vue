@@ -1,5 +1,5 @@
 <template>
-    <div class=" ">
+    <div class="bg-white p-5 rounded-lg shadow-lg ">
         <h1 class="text-green-600 text-2xl mb-2">Anmeldung</h1>
         <UForm :schema="schema" :state="state" class="space-y-4 grid gap-2 " @submit="onSubmit">
             <h2 class="text-lg">
@@ -173,7 +173,7 @@
             <USeparator label="Rechtliches" class="text-lg" />
 
             <span class="text-sm">
-                Während des Lagers machen wir natürlich viele Bilder. Diese könnt Sie sich beim Nachtreffen gerne
+                Während des Lagers machen wir natürlich viele Bilder. Diese können Sie sich beim Nachtreffen gerne
                 abholen.
                 Dazu bringt bitte einen USB-Stick mit auf den wir die Bilder kopieren können.
                 Im Folgenden bitten wir Sie auszuwählen, ob Sie der Aufnahme von Fotos/Videos Ihres Kindes generell
@@ -191,7 +191,7 @@
                     <a href="/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf"
                         target="_blank">Reisebestimmungen</a>
                     aufmerksam durch. Daraufhin bitten wir Sie darum die
-                    <a href="/files/Einverständniserklärung_2024.pdf" target="_blank">Einverständniserklärung</a>
+                    <a href="/files/Einverständniserklärung.pdf" target="_blank">Einverständniserklärung</a>
                     auszufüllen und im folgenden Feld hochzuladen.
                 </template>
             </UFormField>
@@ -225,45 +225,15 @@ import * as v from 'valibot'
 import { schema, arrival, baggage, diseases, foodOptions, genders, photos, swimLevels, yesno, places } from '@/types/registration'
 import type { Schema } from '@/types/registration'
 
+useHead({
+  title: "Anmeldung",
+  meta: [
+    { name: 'description', content: "Hier können Sie Ihr Kind zum kommenden Zeltlager anmelden" }
+  ]
+})
+
 // Create reactive state
 const state = reactive<Record<string, any>>({
-    name: 'tim',
-    sirname: 'nielen',
-    gender: 'männlich',
-    birthday: '2002-08-20',
-    address: 'ingolstädter str 111a',
-    email: 'tim.nielen@online.de',
-    swimmer: 'Schwimmer/in',
-    food: 'vegetarisch',
-    diseases: [], // Can be empty or contain selected options
-    disease_description: undefined,
-    wound_care: "true",
-    pull_ticks: "true",
-    vaccination: "true",
-    vaccination_description: undefined,
-    emergency_name: 'doro nielen',
-    emergency_relationship: 'mutter',
-    emergency_phone_number: '0123456789',
-    emergency_email: 'doro.nielen@online.de',
-    photos: 'Ja, veröffentlichen',
-    contact_doctor: 'abc',
-
-    // Travel-related fields
-    arrival: 'Selbst (und hat noch PLATZ frei)',
-    arrival_driver: undefined,
-    arrival_places: undefined,
-    arrival_baggage: 'passt perfekt',
-    return_driver: undefined,
-    return_places: undefined,
-    return_baggage: 'passt perfekt',
-
-    // Additional checkboxes
-    fitness: true,
-    group_activity_consent: true,
-    privacy_agreement: true,
-    comments: undefined,
-    consent: null, // For file upload
-    consent_filename: undefined
 })
 
 // watch(state, () => {

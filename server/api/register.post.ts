@@ -16,11 +16,6 @@ const transporter = mail.createTransport({
         pass: runtimeConfig.EMAIL_PASSWORD,
     },
 });
-console.log({
-    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-    user: runtimeConfig.EMAIL,
-    pass: runtimeConfig.EMAIL_PASSWORD,
-})
 
 export default defineEventHandler(async (event) => {
     let body: Record<string, any> = {}

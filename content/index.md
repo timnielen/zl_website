@@ -1,6 +1,10 @@
+---
+title: 'Zeltlager Milbertshofen'
+# description: 'meta description of the page'
+---
+
 # Über uns
 ## Wer sind wir?
-
 Das Leiterteam der KJG Ortsgruppe
 Zeltlager Milbertshofen besteht unter
 Johannes Heiß aus ehrenamtlich
@@ -35,30 +39,33 @@ zubereitet werden.
 
 ## Wohin gehts?
 
-Bauernwiese in Vogtareuth
-Unterwindering 5
-83569 Vogtareuth
+Auf eine schöne Wiese in Oberbayern, ca. 50min von München entfernt.  
+(Die genaue Adresse geben wir Ihnen nach der Anmeldung bekannt)
 
 ## Wer ist dabei?
 
 Kinder und Jugendliche im Alter
-von 8 bis 18 Jahren
+von 8 bis 18 Jahren  
 (max. 65 Teilnehmer)
 
 ## Wann?
 
-vom 27.07.2024 bis zum
-03.08.2024
+vom 02.08.2025 bis zum
+09.08.2025
+
 
 ## Preis
 
-150 Euro
+Der Teilnahmebeitrag beträgt 150 Euro.
+Es ist uns wichtig, dass auch weiterhin jeder
+die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu
+verbringen. Gerne könnt ihr euch bei Fragen entweder an unsere E-Mail-Adresse oder per WhatsApp an Johannes Heiß (0176 61906287) wenden.
 
 ## Anmeldung
 
 [→ Hier gehts zur Anmeldung.](/anmeldung){.link}
 
-## Was gibt es Neues?
+<!-- ## Was gibt es Neues?
 
 Bedauerlicherweise haben wir im vergangenen Jahr sowohl aufgrund der
 Anschaffung neuer Ausrüstungsgegenstände für den Wald und unseren
@@ -70,7 +77,7 @@ veranlasst, die Teilnahmegebühren entsprechend anzupassen.
 Der Beitrag für die Teilnahme beim Sommerzeltlager 2024 wurde somit von
 120 Euro auf 150 Euro angehoben. Es ist uns wichtig, dass auch weiterhin jeder
 die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu
-verbringen. Gerne könnt ihr euch bei Fragen entweder an unsere E-MailAdresse oder per WhatsApp an Johannes Heiß (0176 61906287) wenden.
+verbringen. Gerne könnt ihr euch bei Fragen entweder an unsere E-Mail-Adresse oder per WhatsApp an Johannes Heiß (0176 61906287) wenden.
 
 ## Wie könnt ihr helfen?
 
@@ -85,4 +92,4 @@ Erzählt auch euren Freunden
 und Bekannten von unserem
 Zeltlager, sodass zukünftig
 wieder mehr Teilnehmer zu uns
-kommen.
+kommen. -->
