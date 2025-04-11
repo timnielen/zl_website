@@ -44,8 +44,7 @@ Auf eine schöne Wiese in Oberbayern, ca. 50min von München entfernt.
 
 ## Wer ist dabei?
 
-Kinder und Jugendliche im Alter
-von 8 bis 18 Jahren  
+Kinder und Jugendliche im Alter von 8 bis 18 Jahren  
 (max. 65 Teilnehmer)
 
 ## Wann?

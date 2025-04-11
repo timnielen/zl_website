@@ -4,6 +4,7 @@ import { row_schema } from '@/types/registration'
 import type { RowSchema } from '@/types/registration'
 import mail from 'nodemailer'
 import * as v from 'valibot'
+import path from 'path';
 const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.SUPABASE_URL, runtimeConfig.SUPABASE_KEY)
 const transporter = mail.createTransport({
@@ -16,6 +17,9 @@ const transporter = mail.createTransport({
         pass: runtimeConfig.EMAIL_PASSWORD,
     },
 });
+const publicPath = process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : path.join(process.cwd(), "public");
 
 export default defineEventHandler(async (event) => {
     let body: Record<string, any> = {}
@@ -45,10 +49,12 @@ export default defineEventHandler(async (event) => {
             subject: `Bestätigung Anmeldung Zeltlager ${runtimeConfig.YEAR}`, // Subject line
             text: generateEmailText(body as RowSchema), // plain text body
             attachments: [{
-                path: "public/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf"
+                filename: "08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf",
+                path: publicPath + "/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf"
             }, 
             {
-                path: "public/files/packliste.pdf"
+                filename: "packliste.pdf",
+                path: publicPath + "/files/packliste.pdf"
             }
             ]
         });
