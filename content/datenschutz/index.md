@@ -1,3 +1,7 @@
+---
+title: Datenschutzerklärung
+---
+
 # Datenschutzerklärung
 
 ## Präambel
@@ -10,22 +14,17 @@ Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte
 
 Verantwortliche im Sinne gemäß Art. 4 Nr. 7 DSGVO bzw. § 4 Nr. 9 KDG sowie sonstiger datenschutzrechtlicher Bestimmungen ist:
 
-**Anschrift**  
-KJG Ortsgruppe Zeltlager Milbertshofen  
-Milbertshofener Platz 2  
-80809 München  
-Telefon: +49 176 61906287  
-E-Mail: zeltlager-milbertshofen@gmx.de
+**Anschrift**:brKJG Ortsgruppe Zeltlager Milbertshofen:brMilbertshofener Platz 2:br80809 München:brTelefon: +49 176 61906287:brE-Mail: <zeltlager-milbertshofen@gmx.de>
 
 ## Ihre Betroffenenrechte
 
 Sie haben nach der DSGVO und dem KDG (§§ 17 ff. KDG) folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
-- Recht auf Auskunft  
-- Recht auf Berichtigung  
-- Recht auf Löschung  
-- Recht auf Einschränkung der Verarbeitung  
-- Recht auf Widerspruch gegen die Verarbeitung  
+- Recht auf Auskunft
+- Recht auf Berichtigung
+- Recht auf Löschung
+- Recht auf Einschränkung der Verarbeitung
+- Recht auf Widerspruch gegen die Verarbeitung
 - Recht auf Datenübertragbarkeit
 
 Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde bzw. der Datenschutzaufsicht (§§ 42 ff. KDG) über die Verarbeitung Ihrer personenbezogenen Daten zu beschweren.
@@ -42,11 +41,11 @@ Auf unserer Internetseite bieten wir Nutzerinnen und Nutzern die Möglichkeit, s
 
 Die erfassten Daten sind je nach Formular unterschiedlich. Folgende personenbezogene Daten werden jedoch regelmäßig erhoben:
 
-1. Vor- und Nachname  
-2. E-Mail-Adresse  
-3. Anschrift  
-4. Telefonnummer  
-5. Geburtsdatum  
+1. Vor- und Nachname
+2. E-Mail-Adresse
+3. Anschrift
+4. Telefonnummer
+5. Geburtsdatum
 6. Geschlecht
 
 Im Zeitpunkt der Registrierung werden zudem folgende Daten gespeichert:
@@ -63,15 +62,15 @@ Die Website enthält ggf. Links zu anderen Websites, zu Datenschutzerklärungen 
 
 Bei dem informatorischen Besuch unserer Website erfassen wir automatisiert folgende Daten und Informationen vom Computersystem des aufrufenden Rechners:
 
-- IP-Adresse, anonymisiert  
-- Datum und Uhrzeit der Anfrage  
-- Zeitzonendifferenz zur Greenwich Mean Time (GMT)  
-- Inhalt der Anforderung (konkrete Seite)  
-- Zugriffsstatus/HTTP-Statuscode  
-- jeweils übertragene Datenmenge  
-- Website, von der die Anforderung kommt  
-- Browser  
-- Betriebssystem und dessen Oberfläche  
+- IP-Adresse, anonymisiert
+- Datum und Uhrzeit der Anfrage
+- Zeitzonendifferenz zur Greenwich Mean Time (GMT)
+- Inhalt der Anforderung (konkrete Seite)
+- Zugriffsstatus/HTTP-Statuscode
+- jeweils übertragene Datenmenge
+- Website, von der die Anforderung kommt
+- Browser
+- Betriebssystem und dessen Oberfläche
 - Sprache und Version der Browsersoftware
 
 Die Daten werden ebenfalls in den Logfiles unseres Systems gespeichert. Eine Speicherung dieser Daten zusammen mit anderen personenbezogenen Daten des Nutzers findet nicht statt.
@@ -80,8 +79,7 @@ Die Daten werden ebenfalls in den Logfiles unseres Systems gespeichert. Eine Spe
 
 Diese Datenverarbeitung durch unser System dient dem Zweck und unserem Interesse, die Auslieferung der Website an den Rechner der Nutzerin bzw. des Nutzers zu ermöglichen. Die Speicherung in Logfiles erfolgt zur Sicherstellung der Funktionsfähigkeit sowie zur Optimierung und Sicherheit unserer Systeme.
 
-Rechtsgrundlage: Art. 6 Abs. 1 S. 1 lit. f DSGVO bzw. § 6 Abs. 1 lit. g KDG.  
-Die Daten werden nach Sitzungsende bzw. nach spätestens sieben Tagen gelöscht oder anonymisiert.
+Rechtsgrundlage: Art. 6 Abs. 1 S. 1 lit. f DSGVO bzw. § 6 Abs. 1 lit. g KDG.:brDie Daten werden nach Sitzungsende bzw. nach spätestens sieben Tagen gelöscht oder anonymisiert.
 
 ## Cookies
 
@@ -97,24 +95,17 @@ Ein Cookie ist ein kleiner Datensatz, der auf Ihrem Endgerät gespeichert wird u
 
 Einige Elemente unserer Internetseite erfordern es, dass der aufrufende Browser auch nach einem Seitenwechsel identifiziert werden kann. In diesen Cookies werden z. B. folgende Daten gespeichert:
 
-- Spracheinstellungen  
-- Log-In-Informationen  
+- Spracheinstellungen
+- Log-In-Informationen
 - temporäres Speichern von Nutzereingaben
 
-Diese Cookies werden beim Schließen des Browsers gelöscht.  
-Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO bzw. § 6 Abs. 1 lit. g KDG.
+Diese Cookies werden beim Schließen des Browsers gelöscht.:brRechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO bzw. § 6 Abs. 1 lit. g KDG.
 
 ## Kontakt
 
-Auf schriftliche Anfrage werden wir Sie gerne über die zu Ihrer Person gespeicherten Daten informieren.  
-Bitte wenden Sie sich an die verantwortliche Stelle:
+Auf schriftliche Anfrage werden wir Sie gerne über die zu Ihrer Person gespeicherten Daten informieren.:brBitte wenden Sie sich an die verantwortliche Stelle:
 
-**Anschrift**  
-KJG Ortsgruppe Zeltlager Milbertshofen  
-Milbertshofener Platz 2  
-80809 München  
-Telefon: +49 176 61906287  
-E-Mail: zeltlager-milbertshofen@gmx.de
+**Anschrift**:brKJG Ortsgruppe Zeltlager Milbertshofen:brMilbertshofener Platz 2:br80809 München:brTelefon: +49 176 61906287:brE-Mail: <zeltlager-milbertshofen@gmx.de>
 
 ## Datenschutz
 
@@ -128,6 +119,6 @@ Quelle: [eRecht24.de – Internetrecht von Rechtsanwalt Sören Siebert](https://
 
 ## SSL- bzw. TLS-Verschlüsselung
 
-Diese Seite nutzt aus Sicherheitsgründen und zum Schutz vertraulicher Inhalte eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie an der Adresszeile („https://“) und am Schloss-Symbol im Browser.
+Diese Seite nutzt aus Sicherheitsgründen und zum Schutz vertraulicher Inhalte eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie an der Adresszeile („https\://“) und am Schloss-Symbol im Browser.
 
 Wenn die Verschlüsselung aktiviert ist, können übermittelte Daten nicht von Dritten mitgelesen werden.
