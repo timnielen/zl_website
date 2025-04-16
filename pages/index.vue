@@ -73,6 +73,6 @@ console.log(carousel_leiter)
 @import "tailwindcss";
 
 :where(.hero h1) {
-    @apply text-xl md:text-3xl;
+    @apply text-3xl md:text-5xl;
 }
 </style>
