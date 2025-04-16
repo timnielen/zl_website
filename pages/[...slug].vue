@@ -1,5 +1,5 @@
 <template>
-    <article class="prose bg-white shadow-lg p-5 rounded-lg">
+    <article class="bg-white xl:mx-auto max-w-7xl p-10 rounded-xl shadow-xl m-2 prose">
         <ContentRenderer v-if="page" :value="page" />
     </article>
 </template>

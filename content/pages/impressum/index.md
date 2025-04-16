@@ -1,8 +1,8 @@
 ---
-title: Kontakt
+title: Impressum
 ---
 
-# Kontakt
+# Impressum
 
 **Anschrift**
 

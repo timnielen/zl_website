@@ -9,7 +9,7 @@
                     <NuxtLink to="/intern">Übersicht für Zeltlagerleitung</NuxtLink>
                 </li> -->
                 <li class="hover:underline">
-                    <NuxtLink to="/kontakt">Impressum</NuxtLink>
+                    <NuxtLink to="/impressum">Impressum</NuxtLink>
                 </li>
                 <li class="hover:underline">
                     <NuxtLink to="/datenschutz">Datenschutzerklärung</NuxtLink>

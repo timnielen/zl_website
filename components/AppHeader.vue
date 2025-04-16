@@ -14,28 +14,29 @@
             </NuxtLink>
             <ul class="flex gap-5 justify-end grow items-center text-lg max-md:hidden">
                 <ULink raw active-class="bg-green-500 p-2 rounded-md" to="/datenschutz">Datenschutz</ULink>
-                <ULink raw active-class="bg-green-500 p-2 rounded-md" to="/kontakt">Impressum</ULink>
+                <ULink raw active-class="bg-green-500 p-2 rounded-md" to="/impressum">Impressum</ULink>
                 <ULink raw active-class="bg-green-500 p-2 rounded-md" to="/anmeldung">Anmeldung</ULink>
             </ul>
             <UDrawer direction="right" class="md:hidden" title="Menü">
                 <UIcon class="w-12 h-12" label="Open" name="i-material-symbols-menu" />
                 <template #content>
-                    <ul class="flex flex-col gap-5 text-lg m-5">
+                    <div class="flex flex-col gap-5 text-lg m-5">
                         <NuxtLink to="/">
-                            <div class="flex gap-2 items-center ">
+                            <div class="flex flex-col gap-2 items-center ">
                                 <UIcon class="w-12 h-12" name="i-material-symbols-camping-rounded"></UIcon>
-                                <br>
-                                <h1 class="text-lg">
+                                <h1 class="text-lg text-center">
                                     KjG Ortsgruppe
                                     <br>
                                     Zeltlager Milbertshofen
                                 </h1>
                             </div>
                         </NuxtLink>
+                        <USeparator />
+                        <ULink to="/">Startseite</ULink>
                         <ULink to="/datenschutz">Datenschutz</ULink>
-                        <ULink to="/kontakt">Impressum</ULink>
+                        <ULink to="/impressum">Impressum</ULink>
                         <ULink to="/anmeldung">Anmeldung</ULink>
-                    </ul>
+                    </div>
                 </template>
             </UDrawer>
         </nav>
