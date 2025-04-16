@@ -5,9 +5,9 @@
                 <li class="hover:underline">
                     <NuxtLink to="/">Startseite</NuxtLink>
                 </li>
-                <li class="hover:underline">
+                <!-- <li class="hover:underline">
                     <NuxtLink to="/intern">Übersicht für Zeltlagerleitung</NuxtLink>
-                </li>
+                </li> -->
                 <li class="hover:underline">
                     <NuxtLink to="/kontakt">Impressum</NuxtLink>
                 </li>
