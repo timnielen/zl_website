@@ -5,6 +5,11 @@ const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.SUPABASE_URL, runtimeConfig.SUPABASE_KEY)
 
 export default defineEventHandler(async (event) => {
+    if(runtimeConfig.REGISTRATION_IS_OPEN !== "TRUE")
+        throw createError({
+            statusCode: 423,
+            statusMessage: 'Registration not open!',
+        })
     let form_data;
     try {
         form_data = await readMultipartFormData(event)
