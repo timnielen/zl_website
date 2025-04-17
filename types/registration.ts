@@ -27,9 +27,9 @@ const baggage = [
     { value: "ich fahre nicht", label: "Ich selber fahre keine Kinder" },
 ] as const;
 const photos = [
-    { value: "Ja, veröffentlichen", label: "Bilder/Videos gemacht und auf den sozialen Medien oder der Webseite der KJG Ortsgruppe Milbertshofen veröffentlicht werden" },
-    { value: "Ja, NICHT veröffentlichen", label: "Bilder/Videos gemacht, aber NICHT im Internet veröffentlicht werden." },
-    { value: "Nein", label: "KEINE Bilder/Videos gemacht werden" },
+    { value: "Ja, veröffentlichen", label: "Bilder/Videos gemacht und beim Nachtreffen geteilt werden, sowie auf den sozialen Medien oder der Webseite der KJG Ortsgruppe Zeltlager Milbertshofen veröffentlicht werden." },
+    { value: "Ja, NICHT veröffentlichen", label: "Bilder/Videos gemacht und beim Nachtreffen geteilt werden, aber NICHT online veröffentlicht werden." },
+    { value: "Nein", label: "KEINE Bilder/Videos gemacht werden." },
 ] as const;
 const places = [0, 1, 2, 3, 4, 5] as const
 
@@ -57,7 +57,7 @@ const row_schema = v.object({
     return_places: v.optional(v.pipe(v.any(), v.transform((input) => Number(input)), v.number())),
     return_baggage: v.pipe(v.string(), v.minLength(2, 'Bitte wählen Sie eine Option')),
     emergency_name: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie den Notfallkontakt-Namen ein')),
-    emergency_relationship: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie die Beziehung an')),
+    emergency_relationship: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie den Verwandschaftsgrad an')),
     emergency_phone_number: v.pipe(v.string(), v.regex(/^\+?\d{7,15}$/, 'Bitte geben Sie eine gültige Telefonnummer ein')),
     emergency_email: v.pipe(v.string(), v.email('Bitte geben Sie eine gültige E-Mail-Adresse ein')),
     photos: v.pipe(v.string(), v.picklist(photos.map(p => p.value), 'Bitte wählen Sie eine Option aus')),
@@ -66,6 +66,7 @@ const row_schema = v.object({
     privacy_agreement: v.literal(true, "Bitte geben Sie uns hier Ihre Einverständnins"),
     consent_filename: v.string(),
     comments: v.optional(v.string()),
+    invitation_next_year: v.boolean()
 })
 
 const file_schema = v.object({

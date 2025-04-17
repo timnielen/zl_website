@@ -1,8 +1,9 @@
 <template>
     <section class="bg-white xl:mx-auto max-w-7xl p-10 rounded-xl shadow-xl m-2">
-        <h1 class="text-green-600 text-2xl mb-2">Anmeldung</h1>
-        <UForm :schema="schema" :state="state" class="space-y-4 grid gap-2 " @submit="onSubmit">
-            <h2 class="text-lg">
+        <h1 class="my-4 text-primary-700">Anmeldung</h1>
+        <UForm :schema="schema" :state="state" class="space-y-4 grid gap-4 " @submit="onSubmit">
+            <USeparator />
+            <h2>
                 Allgemeine Informationen zum teilnehmenden Kind
             </h2>
 
@@ -21,7 +22,7 @@
             <UFormField label="Adresse" name="address" description="Straße, Hausnummer, Postleitzahl, Ort" required>
                 <UInput v-model="state.address" class="w-full" />
             </UFormField>
-            <UFormField label="Email" name="email" required
+            <UFormField label="E-Mail" name="email" required
                 description="An diese E-Mail senden wir alle weiteren Informationen und die Einladung fürs nächste Jahr">
                 <UInput v-model="state.email" class="w-full" />
             </UFormField>
@@ -78,8 +79,8 @@
                 <UTextarea v-model="state.contact_doctor" class="w-full" />
             </UFormField>
 
-
-            <h2 class="text-lg">
+            <USeparator />
+            <h2>
                 Anmeldedaten zum Bring- und Holdienst
             </h2>
             <div>
@@ -144,8 +145,9 @@
                 </UFormField>
             </div>
 
+            <USeparator />
 
-            <h2 class="text-lg">
+            <h2>
                 Notfallkontakt
             </h2>
             <UFormField label="Vor und Nachname" name="emergency_name" required>
@@ -168,14 +170,18 @@
                 <UTextarea v-model="state.comments" class="w-full" />
             </UFormField>
 
-            <USeparator label="Rechtliches" class="text-lg" />
+            <USeparator />
+            <h2>Rechtliches</h2>
 
             <span class="text-sm">
                 Während des Lagers machen wir natürlich viele Bilder. Diese können Sie sich beim Nachtreffen gerne
                 abholen.
-                Dazu bringt bitte einen USB-Stick mit auf den wir die Bilder kopieren können.
-                Im Folgenden bitten wir Sie auszuwählen, ob Sie der Aufnahme von Fotos/Videos Ihres Kindes generell
-                zustimmen bzw. ob wir diese auch im Internet veröffentlichen dürfen.
+                Bitte bringen Sie dazu einen USB-Stick mit, auf den wir die Bilder kopieren. Die Bilder enthalten
+                Aufnahmen aller Kinder,
+                deren Eltern der Aufnahme zugestimmt haben.
+                Im Folgenden bitten wir Sie auszuwählen, ob Sie generell der Aufnahme von Fotos/Videos Ihres Kindes
+                zustimmen
+                und ob diese ggf. auch im Internet veröffentlicht werden dürfen.
             </span>
             <UFormField required label="Von dem/der Teilnehmenden dürfen " name="photos">
                 <URadioGroup v-model="state.photos" :items="photos" />
@@ -208,6 +214,11 @@
                 </UCheckbox>
             </UFormField>
 
+            <UFormField label="Einladung nächstes Jahr" name="invitation_next_year">
+                <UCheckbox v-model="state.invitation_next_year"
+                    label="Ich möchte im nächsten Jahr eine Einladung per E-Mail erhalten. (Sie können dieser Einwilligung jederzeit widersprechen)" />
+            </UFormField>
+
             <UFormField>
                 <UButton type="submit" :loading="loading">
                     Anmeldung abschicken
@@ -221,7 +232,6 @@
 
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import * as v from 'valibot'
 import { schema, arrival, baggage, diseases, foodOptions, genders, photos, swimLevels, yesno, places } from '@/types/registration'
 import type { Schema } from '@/types/registration'
 
@@ -234,11 +244,33 @@ useHead({
 
 // Create reactive state
 const state = reactive<Record<string, any>>({
+    name: "",
+    sirname: "",
+    gender: "",
+    birthday: "",
+    address: "",
+    email: "",
+    swimmer: "",
+    food: "",
+    wound_care: null,
+    pull_ticks: null,
+    vaccination: null,
+    contact_doctor: "",
+    arrival: "",
+    arrival_baggage: "",
+    return_baggage: "",
+    emergency_name: "",
+    emergency_relationship: "",
+    emergency_phone_number: "",
+    emergency_email: "",
+    photos: "",
+    fitness: false,
+    group_activity_consent: false,
+    privacy_agreement: null,
+    consent_filename: "",
+    consent: null,
+    invitation_next_year: false
 })
-
-// watch(state, () => {
-//     console.log(state)
-// })
 
 function uploadFile(event: Event) {
     const target = event.target as HTMLInputElement
@@ -313,6 +345,11 @@ a {
     @apply text-green-600 underline;
 }
 
-select,
-input {}
+h1 {
+    @apply text-3xl md:text-5xl;
+}
+
+h2 {
+    @apply text-2xl md:text-3xl;
+}
 </style>

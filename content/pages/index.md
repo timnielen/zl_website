@@ -1,94 +1,110 @@
 ---
-title: 'Zeltlager Milbertshofen'
+title: "Zeltlager Milbertshofen 2025"
 # description: 'meta description of the page'
 ---
 
-# Über uns
-## Wer sind wir?
-Das Leiterteam der KJG Ortsgruppe
-Zeltlager Milbertshofen besteht unter
-Johannes Heiß aus ehrenamtlich
-tätigen, ausgebildeten
-Jugendleiter\*innen. Wir sind alle
-jahrelang selbst als Teilnehmer
-mitgefahren und freuen uns jedes Jahr
-mindestens genauso wie unsere
-Teilnehmer auf den aufregenden Start
-in den Sommer. Dabei ist es besonders
-schön, die Entwicklung unserer
-Jugendlichen über mehrere Jahre
-hinweg begleiten und positiv prägen zu
-dürfen.
+::HeroSection
+---
+img_src: img/lager/hero.jpg
+img_alt: Der Zeltplatz zum Sonnenuntergang
+img_alpha: 70
+link:
+    to: /anmeldung
+    value: Jetzt Anmelden
+class: bg-black
+---
+# Zeltlager 2025
 
-## Was machen wir?
+**Abenteuer, Lagerfeuer und leckeres Essen**
 
-Bei uns sind Ihre Kinder in der
-ersten Sommerferienwoche
-inklusive Vollverpflegung und
-Bespaßung bestens aufgehoben.
-Neben den beliebten Aktivitäten
-wie gemütlichen Abenden am
-Lagerfeuer, Ausflügen ins
-Schwimmbad und unserer
-spannenden Geisternacht dürfen
-sich die Teilnehmer auf eine Woche
-voller köstlicher, frisch
-zubereiteter Mahlzeiten freuen, die
-von unserem Küchenteam liebevoll
-zubereitet werden.
+Alter: 8 bis 18 Jahre  
+Datum: 02. - 09. August 2025
 
-## Wohin gehts?
+Der Anmeldezeitraum beginnt am 01. Mai 2025
 
-Auf eine schöne Wiese in Oberbayern, ca. 50min von München entfernt.  
-(Die genaue Adresse geben wir Ihnen nach der Anmeldung bekannt)
+::
 
-## Wer ist dabei?
+::TextSection
 
-Kinder und Jugendliche im Alter von 8 bis 18 Jahren  
-(max. 65 Teilnehmer)
+## Das erwartet dich
 
-## Wann?
+🏕️ Eine Woche Zelten auf einer Wiese in Oberbayern  
+🌲 Spannende und actionreiche Wald- und Geländespiele  
+🔥 Abende am Lagerfeuer mit Liedern und Spielen  
+🏊‍♀️ Ausflug ins Schwimmbad  
+👻 Spannende Geisternacht  
+🍝 Frisch gekochtes Essen vom Küchenteam  
+🎉 Ein liebevoll gestaltetes Programm mit ganz viel Abwechslung
 
-vom 02.08.2025 bis zum
-09.08.2025
+Und das alles mit voller Verpflegung und sicherer Betreuung.
+::
 
 
-## Preis
+::CarouselSection
+---
+dir: /img/lager/
+src:
+  - DSC05737.JPG
+  - 20240802_173936.jpg
+  - C03BDEE7-9ADA-4488-8CE5-0740128CAB2F.jpeg
+  - _MG_4495.JPG
+  - DSC06073.JPG
+  - IMG_20230804_190823.jpg
+  - 20240802_205718.jpg
+  - IMG_20240730_095307.jpg
+  - plane.JPG
+  - IMG_20240727_215000.jpg
+---
+::
 
-Der Teilnahmebeitrag beträgt 150 Euro.
-Es ist uns wichtig, dass auch weiterhin jeder
-die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu
-verbringen. Gerne könnt ihr euch bei Fragen entweder an unsere E-Mail-Adresse oder per WhatsApp an Johannes Heiß (0176 61906287) wenden.
+::TextSection
 
-## Anmeldung
+## Fragen & Antworten
 
-[→ Hier gehts zur Anmeldung.](/anmeldung){.link}
+::UAccordion
+---
+items:
+    -   label: "Wann findet das Zeltlager statt?"
+        icon: "i-material-symbols-calendar-month"
+        content: "Vom 02.08.2025 bis zum 09.08.2025 - Immer in der ersten Sommerferienwoche."
 
-<!-- ## Was gibt es Neues?
+    -   label: "Was kostet das?"
+        icon: "i-material-symbols-euro"
+        content: "Der Teilnahmebeitrag beträgt 150 Euro inklusive Unterkunft, Programm und Vollverpflegung. Es ist uns wichtig, dass auch weiterhin jeder die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu verbringen. Bei finanziellen Fragen sprechen Sie uns gern an."
 
-Bedauerlicherweise haben wir im vergangenen Jahr sowohl aufgrund der
-Anschaffung neuer Ausrüstungsgegenstände für den Wald und unseren
-Zeltplatz als auch aufgrund der gestiegenen Ausgaben für unsere überwiegend
-vegetarische Küche ein finanzielles Defizit verzeichnet. Angesichts dieser
-fortwährenden Kostensteigerungen, welche uns betreffen, fühlen wir uns dazu
-veranlasst, die Teilnahmegebühren entsprechend anzupassen.
+    -   label: "Wo geht's hin?"
+        icon: "i-material-symbols-location-on-outline"
+        content: "Auf einem idyllischen Zeltplatz in Oberbayern, etwa 50 Minuten von München entfernt. Die genaue Adresse erhaltet ihr nach der Anmeldung."
 
-Der Beitrag für die Teilnahme beim Sommerzeltlager 2024 wurde somit von
-120 Euro auf 150 Euro angehoben. Es ist uns wichtig, dass auch weiterhin jeder
-die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu
-verbringen. Gerne könnt ihr euch bei Fragen entweder an unsere E-Mail-Adresse oder per WhatsApp an Johannes Heiß (0176 61906287) wenden.
+    -   label: "Wer kann mitfahren?"
+        icon: "i-material-symbols-person"
+        content: "Kinder und Jugendliche zwischen 8 und 18 Jahren. Insgesamt können bis zu 65 Teilnehmer*innen mit dabei sein."
 
-## Wie könnt ihr helfen?
+    -   label: "An wen kann ich mich bei Fragen wenden?"
+        icon: "i-material-symbols-contact-support-outline"
+        content: "Schreibt uns per E-Mail an 📧 zeltlager-milbertshofen@gmx.de oder direkt per WhatsApp an Johannes Heiß: 📱 0176 61906287"
+---
+::
+::
 
-Für das Jahr 2024 freuen wir
-uns beim Teilnehmerbeitrag über
-eine kleine Spende der Eltern on
-top, damit wir Ihren Kindern
-auch in Zukunft einen schönen
-Start in die Sommerferien
-ermöglichen können.
-Erzählt auch euren Freunden
-und Bekannten von unserem
-Zeltlager, sodass zukünftig
-wieder mehr Teilnehmer zu uns
-kommen. -->
+::CarouselSection
+---
+dir: /img/leiter/
+src:
+  - DSC06198.JPG
+  - IMG_8805.jpeg
+  - DSC06134.JPG
+  - IMG_3539.JPG
+  - DSC06123.JPG
+---
+::
+
+::TextSection
+## Über uns
+
+Wir sind das ehrenamtliche Leitungsteam der KJG Ortsgruppe Zeltlager Milbertshofen - jung, engagiert und mit viel Herz dabei.  
+Viele von uns waren früher selbst Teilnehmer*innen und geben nun ihre Begeisterung weiter.
+
+Mit Kreativität, Erfahrung und einer großen Portion Teamgeist gestalten wir jedes Jahr eine unvergessliche Woche voller Abenteuer, Natur und Gemeinschaft.  
+Unser Ziel: Kindern und Jugendlichen einen sicheren Raum für Spaß, Freundschaft und unvergessliche Erlebnisse bieten.
+::

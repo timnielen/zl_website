@@ -1,7 +1,7 @@
 <template>
-    <article class="bg-white xl:mx-auto max-w-7xl p-10 rounded-xl shadow-xl m-2 prose">
-        <ContentRenderer v-if="page" :value="page" />
-    </article>
+  <article>
+    <ContentRenderer v-if="page" :value="page" class="grid" />
+  </article>
 </template>
 
 <script setup lang="ts">
