@@ -1,5 +1,5 @@
 <template>
-    <header class="bg-primary-600">
+    <header class="bg-green-500">
         <nav
             class="max-w-7xl lg:mx-auto rounded-md p-4 text-white font-semibold flex gap-5 justify-between items-center">
             <NuxtLink to="/">
