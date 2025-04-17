@@ -1,8 +1,9 @@
 <template>
-    <section class="bg-white xl:mx-auto max-w-7xl p-10 rounded-xl shadow-xl m-2">
-        <h1 class="my-4 text-primary-700">Anmeldung</h1>
+    <section class="bg-white xl:mx-auto max-w-7xl px-8 py-12 rounded-xl shadow-xl m-2">
+        <h1 class="text-primary-700">Anmeldung</h1>
+        <USeparator class="py-4"/>
         <UForm :schema="schema" :state="state" class="space-y-4 grid gap-4 " @submit="onSubmit">
-            <USeparator />
+            
             <h2>
                 Allgemeine Informationen zum teilnehmenden Kind
             </h2>
