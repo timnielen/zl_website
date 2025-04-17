@@ -24,7 +24,7 @@
     }
 }
 body {
-    @apply bg-sky-100 to-sky-50 font-playpen dark:from-slate-800 dark:to-gray-950;
+    @apply bg-sky-100 font-playpen dark:from-slate-800 dark:to-gray-950;
 }
 
 /* h1 {
