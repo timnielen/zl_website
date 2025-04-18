@@ -1,5 +1,5 @@
 <template>
-    <footer class="w-full bg-green-500 mt-auto text-white">
+    <footer class="w-full bg-primary-500 mt-auto text-white">
         <nav class="max-w-7xl xl:mx-auto flex max-md:flex-col-reverse justify-between items-center text-sm p-8 gap-4">
             <span class="text-center">{{ new Date().getFullYear() }} © KjG OG Zeltlager Milbertshofen. All rights reserved.</span>
             <USeparator class="sm:hidden" />

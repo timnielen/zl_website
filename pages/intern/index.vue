@@ -1,16 +1,29 @@
 <template>
     <TextSection>
 
-        <ProseH1>Interne Übersicht</ProseH1>
+        <ProseH1 class="text-primary-700">Interne Übersicht</ProseH1>
+        <USeparator />
         <ProseH2>Anmeldungen</ProseH2>
-        <div>
-            <UDropdownMenu :items="column_items" :ui="{ group: 'max-h-96' }">
-                <UButton label="Angezeigte Spalten" color="neutral" variant="outline"
-                    trailing-icon="i-lucide-chevron-down" />
-            </UDropdownMenu>
+
+        <div class="grid w-full border-(--ui-border-accented) border rounded-lg">
+            <div class="flex justify-between py-3.5 px-4 border-b  border-(--ui-border-accented)">
+                <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filtern..." :ui="{ trailing: 'pe-1' }">
+                    <template v-if="globalFilter?.length" #trailing>
+                        <UButton color="neutral" variant="link" size="sm" icon="i-material-symbols-close"
+                            aria-label="Clear input" @click="globalFilter = ''" />
+                    </template>
+                </UInput>
+                <UDropdownMenu :items="column_items" :content="{ align: 'end' }" :ui="{ content: 'max-h-96' }">
+                    <UButton label="Spalten" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-down" />
+                </UDropdownMenu>
+            </div>
+
+            <UTable ref="myTable" v-model:column-visibility="columnVisibility" v-model:column-pinning="columnPinning"
+                v-model:global-filter="globalFilter" :data="registrations || undefined" :columns="columns" />
+            <div class="flex justify-between py-3.5 px-4 border-b  border-(--ui-border-accented)">
+                <UCheckbox label="Vornamen anpinnen" v-model="name_pinned"></UCheckbox>
+            </div>
         </div>
-        <UTable ref="myTable" :data="registrations || undefined" :columns="columns"
-            v-model:column-visibility="columnVisibility" v-model:column-pinning="columnPinning" />
         <div>
             <UButton color="neutral" @click="logOut" :loading="loading">Abmelden</UButton>
         </div>
@@ -242,10 +255,15 @@ const columnVisibility = ref({
     emergency_phone_number: false,
     emergency_email: false,
 })
-
-const columnPinning = ref({
-    left: ["name"],
+const name_pinned = ref(true)
+const left_pinned = computed(() => {
+    return [name_pinned.value ? "name" : undefined]
+})
+const columnPinning = reactive({
+    left: left_pinned,
     right: []
 })
+
+const globalFilter = ref('')
 
 </script>

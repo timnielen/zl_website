@@ -1,10 +1,10 @@
 <template>
-    <header class="bg-green-500">
+    <header class="bg-primary-500">
         <nav
             class="max-w-7xl lg:mx-auto rounded-md p-4 text-white font-semibold flex gap-5 justify-between items-center">
             <NuxtLink to="/">
                 <div class="flex gap-2 items-center ">
-                    <UIcon class="w-12 h-12" name="i-material-symbols-camping-rounded"></UIcon>
+                    <UIcon class="w-12 h-12" name="i-fluent-emoji-flat-camping"></UIcon>
                     <span class="text-lg">
                         KjG Ortsgruppe
                         <br>
