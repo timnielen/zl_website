@@ -1,18 +1,14 @@
 <template>
-    <footer class="w-full bg-green-500 text-white mt-auto">
-        <nav class="max-w-7xl xl:mx-auto p-4 text-xs flex gap-5 flex-wrap justify-center">
-            <ul class="flex gap-5 justify-center grow items-center">
-                <li class="hover:underline">
-                    <NuxtLink to="/">Startseite</NuxtLink>
-                </li>
-                <!-- <li class="hover:underline">
-                    <NuxtLink to="/intern">Übersicht für Zeltlagerleitung</NuxtLink>
-                </li> -->
-                <li class="hover:underline">
-                    <NuxtLink to="/impressum">Impressum</NuxtLink>
-                </li>
-                <li class="hover:underline">
-                    <NuxtLink to="/datenschutz">Datenschutzerklärung</NuxtLink>
+    <footer class="w-full bg-green-500 mt-auto text-white">
+        <nav class="max-w-7xl xl:mx-auto flex max-md:flex-col-reverse justify-between items-center text-sm p-8 gap-4">
+            <span class="text-center">{{ new Date().getFullYear() }} © KjG OG Zeltlager Milbertshofen. All rights reserved.</span>
+            <USeparator class="sm:hidden" />
+            <ul class="flex max-sm:flex-col gap-4">
+                <li v-for="item in items" class="text-center">
+                    <ULink raw :to="item.to" class="text-white" :target="item.target"
+                    active-class="font-bold" inactive-class="text-(--ui-text-muted)">
+                        {{ item.label }}
+                    </ULink>
                 </li>
             </ul>
         </nav>
@@ -20,4 +16,22 @@
 </template>
 
 <script setup lang="ts">
+const items = [{
+    label: 'Anmeldung',
+    to: '/anmeldung',
+}, {
+    label: 'Impressum',
+    to: '/impressum',
+}, {
+    label: 'Datenschutzerklärung',
+    to: '/datenschutz',
+}, {
+    label: 'Intern',
+    to: '/intern',
+}, {
+    label: 'Instagram',
+    to: 'https://www.instagram.com/zeltlager_milbertshofen/',
+    target: "_blank"
+}
+]
 </script>

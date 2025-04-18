@@ -6,7 +6,9 @@ import mail from 'nodemailer'
 import * as v from 'valibot'
 import path from 'path';
 const runtimeConfig = useRuntimeConfig()
-const supabase = createClient(runtimeConfig.SUPABASE_URL, runtimeConfig.SUPABASE_KEY)
+const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.SUPABASE_PRIVATE_KEY)
+console.log(runtimeConfig.SUPABASE_PRIVATE_KEY)
+
 const transporter = mail.createTransport({
     host: "mail.gmx.net",
     port: 587,

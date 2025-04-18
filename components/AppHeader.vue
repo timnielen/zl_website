@@ -13,9 +13,9 @@
                 </div>
             </NuxtLink>
             <ul class="flex gap-5 justify-end grow items-center text-lg max-md:hidden">
-                <ULink raw active-class="bg-primary-500 p-2 rounded-md" to="/datenschutz">Datenschutz</ULink>
-                <ULink raw active-class="bg-primary-500 p-2 rounded-md" to="/impressum">Impressum</ULink>
-                <ULink raw active-class="bg-primary-500 p-2 rounded-md" to="/anmeldung">Anmeldung</ULink>
+                <ULink v-for="item in items" raw :to="item?.to" class="text-white" active-class="font-bold">
+                    {{ item?.label }}
+                </ULink>
             </ul>
             <UDrawer direction="right" class="md:hidden" title="Menü">
                 <UIcon class="w-12 h-12" label="Open" name="i-material-symbols-menu" />
@@ -33,9 +33,10 @@
                         </NuxtLink>
                         <USeparator />
                         <ULink to="/">Startseite</ULink>
-                        <ULink to="/datenschutz">Datenschutz</ULink>
-                        <ULink to="/impressum">Impressum</ULink>
-                        <ULink to="/anmeldung">Anmeldung</ULink>
+                        <ULink v-for="item in items" :to="item.to">
+                            {{ item.label }}
+                        </ULink>
+                        <ULink to="/intern">Intern</ULink>
                     </div>
                 </template>
             </UDrawer>
@@ -44,4 +45,14 @@
 </template>
 
 <script setup lang="ts">
+const items = [{
+    label: 'Anmeldung',
+    to: '/anmeldung',
+}, {
+    label: 'Datenschutz',
+    to: '/datenschutz',
+}, {
+    label: 'Impressum',
+    to: '/impressum',
+}]
 </script>

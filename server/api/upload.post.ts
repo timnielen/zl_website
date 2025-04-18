@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { file_schema } from '@/types/registration'
 import * as v from 'valibot'
 const runtimeConfig = useRuntimeConfig()
-const supabase = createClient(runtimeConfig.SUPABASE_URL, runtimeConfig.SUPABASE_KEY)
-
+const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.SUPABASE_PRIVATE_KEY)
+console.log(runtimeConfig.SUPABASE_PRIVATE_KEY)
 export default defineEventHandler(async (event) => {
     if(runtimeConfig.REGISTRATION_IS_OPEN !== "TRUE")
         throw createError({

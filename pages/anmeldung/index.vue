@@ -1,5 +1,5 @@
 <template>
-    <section class="bg-white xl:mx-auto max-w-7xl px-8 py-12 rounded-xl shadow-xl m-2">
+    <section class="bg-white xl:mx-auto max-w-7xl px-8 py-12 rounded-xl shadow-xl my-8">
         <h1 class="text-primary-700">Anmeldung</h1>
         <USeparator class="py-4"/>
         <UForm :schema="schema" :state="state" class="space-y-4 grid gap-4 " @submit="onSubmit">
