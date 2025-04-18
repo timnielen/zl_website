@@ -10,7 +10,7 @@
             </UDropdownMenu>
         </div>
         <UTable ref="myTable" :data="registrations || undefined" :columns="columns"
-            v-model:column-visibility="columnVisibility" />
+            v-model:column-visibility="columnVisibility" v-model:column-pinning="columnPinning" />
         <div>
             <UButton color="neutral" @click="logOut" :loading="loading">Abmelden</UButton>
         </div>
@@ -23,7 +23,7 @@ import { UBadge, UButton, UCheckbox } from '#components'
 import type { DropdownMenuItem, TableColumn, } from '@nuxt/ui'
 import { createClient } from '@supabase/supabase-js'
 import type { RowSchema } from '~/types/registration'
-import type { CellContext } from '@tanstack/vue-table'
+import type { CellContext, HeaderContext } from '@tanstack/vue-table'
 import { title, type variant } from 'valibot'
 import ConfirmationButton from '~/components/ConfirmationButton.vue'
 definePageMeta({
@@ -56,7 +56,7 @@ const column_items = computed<DropdownMenuItem[]>((): DropdownMenuItem[] => {
     console.log(columns)
     return columns.filter((column) => column.getCanHide())
         .map((column) => ({
-            label: column.columnDef.header as string,
+            label: column.id,
             type: 'checkbox' as const,
             checked: column.getIsVisible(),
             onUpdateChecked(checked: boolean) {
@@ -80,10 +80,10 @@ function yesno(column: string) {
     }
 }
 const columns: TableColumn<Registration>[] = [
-    { accessorKey: 'id', header: 'id' },
+    { accessorKey: 'id', header: getHeader('id') },
     {
         accessorKey: 'created_at',
-        header: 'Anmeldezeitpunkt',
+        header: getHeader('Anmeldezeitpunkt'),
         cell: ({ row }) => {
             return new Date(row.getValue('created_at')).toLocaleString('de-DE', {
                 day: '2-digit',
@@ -95,12 +95,12 @@ const columns: TableColumn<Registration>[] = [
             })
         }
     },
-    { accessorKey: 'name', header: 'Vorname' },
-    { accessorKey: 'sirname', header: 'Nachname' },
-    { accessorKey: 'gender', header: 'Geschlecht' },
+    { accessorKey: 'name', header: getHeader("Vorname") },
+    { accessorKey: 'sirname', header: getHeader('Nachname') },
+    { accessorKey: 'gender', header: getHeader('Geschlecht') },
     {
         accessorKey: 'birthday',
-        header: 'Geburtsdatum',
+        header: getHeader('Geburtsdatum'),
         cell: ({ row }) => {
             return new Date(row.getValue('birthday')).toLocaleDateString('de-DE', {
                 day: '2-digit',
@@ -109,40 +109,40 @@ const columns: TableColumn<Registration>[] = [
             })
         }
     },
-    { accessorKey: 'address', header: 'Adresse' },
-    { accessorKey: 'email', header: 'Email' },
-    { accessorKey: 'fitness', header: 'Fitness', cell: yesno('fitness') },
-    { accessorKey: 'swimmer', header: 'Schwimmlevel' },
-    { accessorKey: 'food', header: 'Essenswunsch' },
-    { accessorKey: 'diseases', header: 'Erkrankungen (Auswahl)' },
-    { accessorKey: 'disease_description', header: 'Erkrankungen' },
-    { accessorKey: 'wound_care', header: 'Wundversorgung?', cell: yesno('wound_care') },
-    { accessorKey: 'pull_ticks', header: 'Zecken entfernen?', cell: yesno('pull_ticks') },
-    { accessorKey: 'vaccination', header: 'Impfstatus ausreichend?', cell: yesno('vaccination') },
-    { accessorKey: 'vaccination_description', header: 'Impfstatus' },
-    { accessorKey: 'group_activity_consent', header: 'Aufsichtspflicht-Entbindung' },
-    { accessorKey: 'contact_doctor', header: 'Hausarzt' },
-    { accessorKey: 'arrival', header: 'Anreiseart' },
-    { accessorKey: 'arrival_driver', header: 'Fahrer*in (Hinfahrt)' },
-    { accessorKey: 'arrival_places', header: 'Plätze (Hinfahrt)' },
-    { accessorKey: 'arrival_baggage', header: 'Gepäck (Hinfahrt)' },
-    { accessorKey: 'return_driver', header: 'Fahrer*in (Rückfahrt)' },
-    { accessorKey: 'return_places', header: 'Plätze (Rückfahrt)' },
-    { accessorKey: 'return_baggage', header: 'Gepäck (Rückfahrt)' },
+    { accessorKey: 'address', header: getHeader('Adresse') },
+    { accessorKey: 'email', header: getHeader('Email') },
+    { accessorKey: 'fitness', header: getHeader('Fitness'), cell: yesno('fitness') },
+    { accessorKey: 'swimmer', header: getHeader('Schwimmlevel') },
+    { accessorKey: 'food', header: getHeader('Essenswunsch') },
+    { accessorKey: 'diseases', header: getHeader('Erkrankungen (Auswahl)') },
+    { accessorKey: 'disease_description', header: getHeader('Erkrankungen') },
+    { accessorKey: 'wound_care', header: getHeader('Wundversorgung?'), cell: yesno('wound_care') },
+    { accessorKey: 'pull_ticks', header: getHeader('Zecken entfernen?'), cell: yesno('pull_ticks') },
+    { accessorKey: 'vaccination', header: getHeader('Impfstatus ausreichend?'), cell: yesno('vaccination') },
+    { accessorKey: 'vaccination_description', header: getHeader('Impfstatus') },
+    { accessorKey: 'group_activity_consent', header: getHeader('Aufsichtspflicht-Entbindung') },
+    { accessorKey: 'contact_doctor', header: getHeader('Hausarzt') },
+    { accessorKey: 'arrival', header: getHeader('Anreiseart') },
+    { accessorKey: 'arrival_driver', header: getHeader('Fahrer*in (Hinfahrt)') },
+    { accessorKey: 'arrival_places', header: getHeader('Plätze (Hinfahrt)') },
+    { accessorKey: 'arrival_baggage', header: getHeader('Gepäck (Hinfahrt)') },
+    { accessorKey: 'return_driver', header: getHeader('Fahrer*in (Rückfahrt)') },
+    { accessorKey: 'return_places', header: getHeader('Plätze (Rückfahrt)') },
+    { accessorKey: 'return_baggage', header: getHeader('Gepäck (Rückfahrt)') },
     {
         accessorKey: 'emergency',
-        header: 'Notfall',
+        header: getHeader('Notfall'),
         cell: ({ row }) => {
             return `${row.getValue("emergency_name")} (${row.getValue("emergency_relationship")}), ${row.getValue("emergency_phone_number")}, ${row.getValue("emergency_email")}`
         }
     },
-    { accessorKey: 'emergency_name', header: 'Name (Notfall)' },
-    { accessorKey: 'emergency_relationship', header: 'Verwandtschaftsgrad (Notfall)' },
-    { accessorKey: 'emergency_phone_number', header: 'Telefonnummer (Notfall)' },
-    { accessorKey: 'emergency_email', header: 'Email (Notfall)' },
-    { accessorKey: 'comments', header: 'Kommentare' },
+    { accessorKey: 'emergency_name', header: getHeader('Name (Notfall)') },
+    { accessorKey: 'emergency_relationship', header: getHeader('Verwandtschaftsgrad (Notfall)') },
+    { accessorKey: 'emergency_phone_number', header: getHeader('Telefonnummer (Notfall)') },
+    { accessorKey: 'emergency_email', header: getHeader('Email (Notfall)') },
+    { accessorKey: 'comments', header: getHeader('Kommentare') },
     {
-        accessorKey: 'photos', header: 'Fotos', cell: ({ row }) => {
+        accessorKey: 'photos', header: getHeader('Fotos'), cell: ({ row }) => {
             const color = {
                 'Ja, veröffentlichen': 'success' as const,
                 'Ja, NICHT veröffentlichen': 'neutral' as const,
@@ -155,7 +155,7 @@ const columns: TableColumn<Registration>[] = [
         }
     },
     {
-        accessorKey: 'consent_filename', header: 'Einverständniserklärung', cell: ({ row }) => {
+        accessorKey: 'consent_filename', header: getHeader('Einverständniserklärung'), cell: ({ row }) => {
             const filename = row.getValue('consent_filename') as string;
             return h(UButton, {
                 variant: "ghost",
@@ -164,7 +164,7 @@ const columns: TableColumn<Registration>[] = [
                     const { data, error } = await supabase.storage.from("consent").download(filename)
                     if (error) throw error
                     const url = URL.createObjectURL(data)
-                    
+
                     const a = document.createElement('a')
                     a.href = url
                     a.target = "_blank"
@@ -178,10 +178,10 @@ const columns: TableColumn<Registration>[] = [
             }, () => filename)
         }
     },
-    { accessorKey: 'privacy_agreement', header: 'Zustimmung Datenschutzerklärung', cell: yesno('privacy_agreement') },
-    { accessorKey: 'invitation_next_year', header: "Zustimmung Einladung", cell: yesno('invitation_next_year') },
+    { accessorKey: 'privacy_agreement', header: getHeader('Zustimmung Datenschutzerklärung'), cell: yesno('privacy_agreement') },
+    { accessorKey: 'invitation_next_year', header: getHeader("Zustimmung Einladung"), cell: yesno('invitation_next_year') },
     {
-        accessorKey: 'paid', header: "Bezahlt?", cell: ({ row }) => {
+        accessorKey: 'paid', header: getHeader("Bezahlt?"), cell: ({ row }) => {
             const paid = row.getValue('paid') as boolean;
             return h(ConfirmationButton, {
                 title: "Möchtest du den Status ändern?",
@@ -191,7 +191,7 @@ const columns: TableColumn<Registration>[] = [
                     const { data, error } = await supabase.from("Registrations")
                         .update({ paid: !paid })
                         .eq('id', row.getValue('id') as number)
-                    if(error) console.error(error)
+                    if (error) console.error(error)
                     await refresh()
                 }
             }, () => h(UButton, {
@@ -204,6 +204,25 @@ const columns: TableColumn<Registration>[] = [
         }
     },
 ]
+
+function getHeader(label: string) {
+    return ({ column }: HeaderContext<Registration, unknown>) => {
+        const isSorted = column.getIsSorted()
+        return h(UButton, {
+            color: 'neutral',
+            variant: 'ghost',
+            label,
+            icon: isSorted
+                ? isSorted === 'asc'
+                    ? 'i-lucide-arrow-up-narrow-wide'
+                    : 'i-lucide-arrow-down-wide-narrow'
+                : 'i-lucide-arrow-up-down',
+            class: '-mx-2.5',
+            onClick: () => column.toggleSorting(column.getIsSorted() === 'asc')
+        })
+    }
+}
+
 const columnVisibility = ref({
     id: false,
     created_at: false,
@@ -222,6 +241,11 @@ const columnVisibility = ref({
     emergency_relationship: false,
     emergency_phone_number: false,
     emergency_email: false,
+})
+
+const columnPinning = ref({
+    left: ["name"],
+    right: []
 })
 
 </script>
