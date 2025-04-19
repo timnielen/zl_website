@@ -58,33 +58,15 @@ src:
 ::
 
 ::TextSection
+## Über uns
 
-## Fragen & Antworten
+Wir sind das ehrenamtliche Leitungsteam des Zeltlagers Milbertshofen - jung, engagiert und mit viel Herz dabei.  
 
-::UAccordion
----
-items:
-    -   label: "Wann findet das Zeltlager statt?"
-        icon: "i-material-symbols-calendar-month"
-        content: "Vom 02.08.2025 bis zum 09.08.2025 - Immer in der ersten Sommerferienwoche."
+Wir alle habe früher selbst teilgenommen und geben nun unsere Begeisterung weiter.
+Mit Kreativität, Erfahrung und einer großen Portion Teamgeist gestalten wir jedes Jahr eine unvergessliche Woche voller Abenteuer, Natur und Gemeinschaft.  
 
-    -   label: "Was kostet das?"
-        icon: "i-material-symbols-euro"
-        content: "Der Teilnahmebeitrag beträgt 150 Euro inklusive Unterkunft, Programm und Vollverpflegung. Es ist uns wichtig, dass auch weiterhin jeder die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu verbringen. Bei finanziellen Fragen sprechen Sie uns gern an."
-
-    -   label: "Wo geht's hin?"
-        icon: "i-material-symbols-location-on-outline"
-        content: "Auf einem idyllischen Zeltplatz in Oberbayern, etwa 50 Minuten von München entfernt. Die genaue Adresse erhaltet ihr nach der Anmeldung."
-
-    -   label: "Wer kann mitfahren?"
-        icon: "i-material-symbols-person"
-        content: "Kinder und Jugendliche zwischen 8 und 18 Jahren. Insgesamt können bis zu 65 Teilnehmer*innen mit dabei sein."
-
-    -   label: "An wen kann ich mich bei Fragen wenden?"
-        icon: "i-material-symbols-contact-support-outline"
-        content: "Schreibt uns per E-Mail an 📧 zeltlager-milbertshofen@gmx.de oder direkt per WhatsApp an Johannes Heiß: 📱 0176 61906287"
----
-::
+Unser Ziel:
+Kindern und Jugendlichen einen sicheren Raum für Spaß, Freundschaft und unvergessliche Erlebnisse bieten.
 ::
 
 ::CarouselSection
@@ -96,15 +78,36 @@ src:
   - DSC06134.JPG
   - IMG_3539.JPG
   - DSC06123.JPG
+  - DSC05753.JPG
 ---
 ::
 
 ::TextSection
-## Über uns
 
-Wir sind das ehrenamtliche Leitungsteam der KJG Ortsgruppe Zeltlager Milbertshofen - jung, engagiert und mit viel Herz dabei.  
-Viele von uns waren früher selbst Teilnehmer*innen und geben nun ihre Begeisterung weiter.
+## Fragen & Antworten
 
-Mit Kreativität, Erfahrung und einer großen Portion Teamgeist gestalten wir jedes Jahr eine unvergessliche Woche voller Abenteuer, Natur und Gemeinschaft.  
-Unser Ziel: Kindern und Jugendlichen einen sicheren Raum für Spaß, Freundschaft und unvergessliche Erlebnisse bieten.
+::UAccordion
+---
+items:
+    -   label: "Wo geht's hin?"
+        icon: "i-material-symbols-location-on-outline"
+        content: "Wir verbringen unser Zeltlager dieses Jahr auf einem idyllischem Zeltplatz in Oberbayern. Dieser befindet sich im Münchener Osten ca. 50 Minuten mit dem Auto entfernt. Die genaue Adresse erhaltet ihr nach eurer Anmeldung!"
+
+    -   label: "Wer kann bei uns mitfahren?"
+        icon: "i-material-symbols-person"
+        content: "Alle Kinder und Jugendliche zwischen 8 und 18 Jahren sind herzlichst zum Zeltlager eingeladen. Insgesamt können wir bis zu 65 Teilnehmer*innen mitnehmen."
+
+    -   label: "Wann findet das Zeltlager statt?"
+        icon: "i-material-symbols-calendar-month"
+        content: "Wir fahren jedes Jahr in der ersten Sommerferienwoche ins Zeltlager. In diesem Jahr findet das Zeltlager vom 02.08.2025 bis zum 09.08.2025 statt."
+
+    -   label: "Was kostet das?"
+        icon: "i-material-symbols-euro"
+        content: "Der Teilnahmebeitrag beträgt 150 Euro inklusive Unterkunft, Programm und Vollverpflegung. Es ist uns wichtig, dass auch weiterhin jeder die Möglichkeit hat, gemeinsam mit uns die erste Sommerferienwoche zu verbringen. Bei finanziellen Fragen sprechen Sie uns gern an."
+
+    -   label: "Weitere Fragen?"
+        icon: "i-material-symbols-contact-support-outline"
+        content: "Schreibt uns gerne eine E-Mail an zeltlager-milbertshofen@gmx.de oder wendet euch direkt per WhatsApp an  unsere Ortsgruppenleitung Johannes Heiß unter 0176 61906287."
+---
+::
 ::
