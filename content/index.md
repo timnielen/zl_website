@@ -84,7 +84,7 @@ src:
 
 ::TextSection
 
-## Fragen & Antworten
+## Eure Fragen - Unsere Antworten
 
 ::UAccordion
 ---
