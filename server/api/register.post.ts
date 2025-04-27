@@ -62,6 +62,10 @@ export default defineEventHandler(async (event) => {
             {
                 filename: "packliste.pdf",
                 path: publicPath + "/files/packliste.pdf"
+            }, 
+            {
+                filename: "wegbeschreibung.pdf",
+                path: publicPath + "/files/wegbeschreibung.pdf"
             }
             ]
         });
@@ -82,15 +86,17 @@ function generateEmailText(data: RowSchema) {
     return `Liebe(r) ${data.name},
             
 hiermit bestätigen wir deine Anmeldung fürs Zeltlager ${runtimeConfig.YEAR}. Wir freuen uns schon tierisch auf dich!
+
+Anbei findet ihr nochmal die Reisebedingungen und die Packliste, sowie die Wegbeschreibungen zu Kirche & Zeltplatz.
+Der Elternabend findet am 23.06.2025 um 18:00 Uhr im Pfarrheim neben der Kirche statt. 
     
 Wir haben die folgenden Daten von dir erhalten:
 
 ${Object.entries(data).map((entry) => `${entry[0]}: ${entry[1] || "k. A."}`).join("\n")}
 
 Bitte überprüfe nochmal, ob alles richtig ist. Wenn nicht, antworte auf diese E-Mail und korrigiere die falschen Angaben.
-Anbei findet ihr nochmal die Reisebedingungen und die Packliste.
-Sollten bei dir oder deinen Eltern weitere Probleme oder Fragen auftreten, kontaktiert mich gerne direkt unter +49 176 61906287.
+Sollten bei dir oder deinen Eltern weitere Probleme oder Fragen auftreten, kontaktiert mich gerne direkt unter +49 176 81229107.
     
-MfG Johannes Heiß
+LG Johannes Heiß
 (Ortsgruppenleitung der KjG Ortsgruppe Zeltlager Milbertshofen)`
 }
