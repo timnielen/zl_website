@@ -1,7 +1,7 @@
 <template>
     <TextSection>
 
-        <ProseH1 class="text-primary-700">Interne Übersicht</ProseH1>
+        <ProseH1 class="text-primary-500">Interne Übersicht</ProseH1>
         <USeparator />
         <ProseH2>Anmeldungen</ProseH2>
 
