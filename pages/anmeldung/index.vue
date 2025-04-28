@@ -237,9 +237,9 @@ import { schema, arrival, baggage, diseases, foodOptions, genders, photos, swimL
 import type { Schema } from '@/types/registration'
 
 useHead({
-    title: "Anmeldung",
+    title: "Anmeldung - Zeltlager Milbertshofen",
     meta: [
-        { name: 'description', content: "Hier können Sie Ihr Kind zum kommenden Zeltlager anmelden" }
+        { name: 'description', content: "Hier können Sie Ihr Kind zum kommenden Zeltlager anmelden." }
     ]
 })
 

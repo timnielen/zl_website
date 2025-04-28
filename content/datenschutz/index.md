@@ -1,5 +1,6 @@
 ---
 title: Datenschutzerklärung
+description: "Wir informieren Sie nachfolgend gemäß den gesetzlichen Vorgaben des Datenschutzrechts insb. gemäß BDSG n.F. und der europäischen Datenschutz-Grundverordnung"
 date: April 2025 
 ---
 

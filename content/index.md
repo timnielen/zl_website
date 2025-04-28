@@ -1,6 +1,6 @@
 ---
 title: "Zeltlager Milbertshofen 2025"
-# description: 'meta description of the page'
+description: 'Im August 2025 findet das jährliche Zeltlager der KjG Ortsgruppe Zeltlager Milbertshofen statt. Hier findest du alle Informationen und kannst dich anmelden.'
 ---
 
 ::HeroSection

@@ -18,9 +18,19 @@ export default defineNuxtConfig({
       tailwindcss()
     ],
   },
+  nitro: {
+    prerender: {
+      crawlLinks: true
+    },
+  },
 
   compatibilityDate: '2024-08-07',
-  modules: ["@nuxt/ui", "@nuxt/image", "@nuxt/content"],
+  modules: [
+    "@nuxt/ui",
+    "@nuxt/image",
+    "@nuxt/content",
+    "@nuxtjs/sitemap"
+  ],
 
   runtimeConfig: {
     public: {
