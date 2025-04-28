@@ -7,7 +7,6 @@ import * as v from 'valibot'
 import path from 'path';
 const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.SUPABASE_PRIVATE_KEY)
-console.log(runtimeConfig.SUPABASE_PRIVATE_KEY)
 
 const transporter = mail.createTransport({
     host: "mail.gmx.net",
@@ -60,12 +59,12 @@ export default defineEventHandler(async (event) => {
                 path: publicPath + "/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf"
             }, 
             {
-                filename: "packliste.pdf",
-                path: publicPath + "/files/packliste.pdf"
+                filename: "Packliste.pdf",
+                path: publicPath + "/files/Packliste.pdf"
             }, 
             {
-                filename: "wegbeschreibung.pdf",
-                path: publicPath + "/files/wegbeschreibung.pdf"
+                filename: "Wegbeschreibung.pdf",
+                path: publicPath + "/files/Wegbeschreibung.pdf"
             }
             ]
         });

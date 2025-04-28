@@ -1,9 +1,9 @@
 <template>
     <section class="bg-white xl:mx-auto max-w-7xl px-8 py-12 rounded-xl shadow-xl my-8">
         <h1 class="text-primary-700">Anmeldung</h1>
-        <USeparator class="py-4"/>
+        <USeparator class="py-4" />
         <UForm :schema="schema" :state="state" class="space-y-4 grid gap-4 " @submit="onSubmit">
-            
+
             <h2>
                 Allgemeine Informationen zum teilnehmenden Kind
             </h2>
@@ -24,8 +24,13 @@
                 <UInput v-model="state.address" class="w-full" />
             </UFormField>
             <UFormField label="E-Mail" name="email" required
-                description="An diese E-Mail senden wir alle weiteren Informationen und die Einladung fürs nächste Jahr">
+                description="An diese E-Mail senden wir alle weiteren Informationen">
                 <UInput v-model="state.email" class="w-full" />
+            </UFormField>
+
+            <UFormField label="Einladung nächstes Jahr" name="invitation_next_year">
+                <UCheckbox v-model="state.invitation_next_year"
+                    label="Ich möchte im nächsten Jahr eine Einladung per E-Mail erhalten. (Sie können dieser Einwilligung jederzeit widersprechen)" />
             </UFormField>
 
             <UFormField label="Fitness" name="fitness" required>
@@ -213,11 +218,6 @@
                         </span>
                     </template>
                 </UCheckbox>
-            </UFormField>
-
-            <UFormField label="Einladung nächstes Jahr" name="invitation_next_year">
-                <UCheckbox v-model="state.invitation_next_year"
-                    label="Ich möchte im nächsten Jahr eine Einladung per E-Mail erhalten. (Sie können dieser Einwilligung jederzeit widersprechen)" />
             </UFormField>
 
             <UFormField>
