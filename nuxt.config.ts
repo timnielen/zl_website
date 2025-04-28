@@ -31,6 +31,19 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "@nuxtjs/sitemap"
   ],
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'de',
+      },
+      meta: [
+        {
+          name: "google-site-verification",
+          content: "9B9kaUYY018Ogjp0lgrl5orU4oCHohKrdtzYdT1m0YI"
+        }
+      ]
+    }
+  },
 
   runtimeConfig: {
     public: {
