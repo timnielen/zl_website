@@ -86,6 +86,7 @@ Diese dienen der Sicherstellung des Betriebs und werden nicht mit anderen Daten 
 - Foto-/Video-Einwilligung
 - Dateiname der Einverständniserklärung
 - Zustimmung zur Datenschutzerklärung
+- Zustimmung zur Einladung im nächsten Jahr
 
 ## Speicherdauer
 
