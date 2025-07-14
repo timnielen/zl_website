@@ -8,9 +8,9 @@ description: 'Im August 2025 findet das jährliche Zeltlager der KjG Ortsgruppe 
 img_src: img/lager/hero.jpg
 img_alt: Der Zeltplatz zum Sonnenuntergang
 img_alpha: 70
-link:
-    to: /anmeldung
-    value: Jetzt Anmelden
+#link:
+#    to: /anmeldung
+#    value: Jetzt Anmelden
 class: bg-black
 ---
 # Zeltlager 2025
@@ -20,8 +20,8 @@ class: bg-black
 Alter: 8 bis 18 Jahre  
 Datum: 02. - 09. August 2025
 
-Der Anmeldezeitraum beginnt am 01. Mai 2025
-
+#Der Anmeldezeitraum beginnt am 01. Mai 2025
+Der Anmeldezeitraum ist zuende.
 ::
 
 ::TextSection
