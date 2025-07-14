@@ -1,6 +1,6 @@
 <template>
     <section class="bg-white xl:mx-auto max-w-7xl px-8 py-12 rounded-xl shadow-xl my-8">
-        <h1 class="text-primary-500">Anmeldung</h1>
+        <h1 class="text-primary-500">Anmeldung <span v-if="runtimeConfig.public.REGISTRATION_IS_OPEN !== 'TRUE'">(geschlossen)</span></h1>
         <USeparator class="py-4" />
         <UForm :schema="schema" :state="state" class="space-y-4 grid gap-4 " @submit="onSubmit">
 
@@ -242,6 +242,8 @@ useHead({
         { name: 'description', content: "Hier können Sie Ihr Kind zum kommenden Zeltlager anmelden." }
     ]
 })
+
+const runtimeConfig = useRuntimeConfig()
 
 // Create reactive state
 const state = reactive<Record<string, any>>({

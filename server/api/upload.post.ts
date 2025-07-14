@@ -5,7 +5,7 @@ const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.SUPABASE_PRIVATE_KEY)
 
 export default defineEventHandler(async (event) => {
-    if(runtimeConfig.REGISTRATION_IS_OPEN !== "TRUE")
+    if(runtimeConfig.public.REGISTRATION_IS_OPEN !== "TRUE")
         throw createError({
             statusCode: 423,
             statusMessage: 'Registration not open!',

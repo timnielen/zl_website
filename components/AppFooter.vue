@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-const items = [{
+let items = [{
     label: 'Anmeldung',
     to: '/anmeldung',
 }, {
@@ -34,4 +34,9 @@ const items = [{
     target: "_blank"
 }
 ]
+const runtimeConfig = useRuntimeConfig()
+
+if(runtimeConfig.public.REGISTRATION_IS_OPEN !== "TRUE") {
+    items.shift()
+}
 </script>

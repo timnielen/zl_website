@@ -55,4 +55,9 @@ const items = [{
     label: 'Impressum',
     to: '/impressum',
 }]
+
+const runtimeConfig = useRuntimeConfig()
+if(runtimeConfig.public.REGISTRATION_IS_OPEN !== "TRUE") {
+    items.shift()
+}
 </script>

@@ -23,7 +23,7 @@ const publicPath = process.env.VERCEL_PROJECT_PRODUCTION_URL
       : path.join(process.cwd(), "public");
 
 export default defineEventHandler(async (event) => {
-    if(runtimeConfig.REGISTRATION_IS_OPEN !== "TRUE")
+    if(runtimeConfig.public.REGISTRATION_IS_OPEN !== "TRUE")
         throw createError({
             statusCode: 423,
             statusMessage: 'Registration not open!',
