@@ -2,6 +2,9 @@
     <TextSection>
 
         <ProseH1 class="text-primary-500">Interne Übersicht</ProseH1>
+        <div>
+            <UButton color="neutral" @click="logOut" :loading="loading">Abmelden</UButton>
+        </div>
         <USeparator />
         <ProseH2>Anmeldungen</ProseH2>
 
@@ -24,10 +27,12 @@
                 <UCheckbox label="Vornamen anpinnen" v-model="name_pinned"></UCheckbox>
             </div>
         </div>
-        <div>
-            <UButton color="neutral" @click="logOut" :loading="loading">Abmelden</UButton>
-        </div>
 
+        <USeparator />
+        <ProseH2>Spiele</ProseH2>
+        <Games></Games>
+        <USeparator />
+        <Scores></Scores>
     </TextSection>
 </template>
 
@@ -39,6 +44,8 @@ import type { RowSchema } from '~/types/registration'
 import type { CellContext, HeaderContext } from '@tanstack/vue-table'
 import { title, type variant } from 'valibot'
 import ConfirmationButton from '~/components/ConfirmationButton.vue'
+import { Games, Scores } from '#components'
+
 definePageMeta({
     middleware: ['auth']
 })
@@ -56,7 +63,9 @@ async function logOut() {
 }
 
 const { data: registrations, refresh } = await useAsyncData("getRegistrations", async () => {
-    const { data, error } = await supabase.from("Registrations").select("*")
+    const { data, error } = await supabase.from("numbered_participants")
+        .select("*")
+        .order("number", {ascending: true})
     if (error) throw error
     return data
 })
@@ -82,7 +91,7 @@ const column_items = computed<DropdownMenuItem[]>((): DropdownMenuItem[] => {
 })
 
 
-type Registration = RowSchema & { id: number, created_at: string, paid: boolean }
+type Registration = RowSchema & { id: number, number:number, created_at: string, paid: boolean }
 function yesno(column: string) {
     return ({ row }: CellContext<Registration, unknown>) => {
         const color = row.getValue(column) ? 'success' : 'error';
@@ -94,6 +103,7 @@ function yesno(column: string) {
 }
 const columns: TableColumn<Registration>[] = [
     { accessorKey: 'id', header: getHeader('id') },
+    { accessorKey: 'number', header: getHeader('Nummer') },
     {
         accessorKey: 'created_at',
         header: getHeader('Anmeldezeitpunkt'),
@@ -255,7 +265,7 @@ const columnVisibility = ref({
     emergency_phone_number: false,
     emergency_email: false,
 })
-const name_pinned = ref(true)
+const name_pinned = ref(false)
 const left_pinned = computed(() => {
     return [name_pinned.value ? "name" : undefined]
 })
