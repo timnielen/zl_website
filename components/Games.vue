@@ -13,7 +13,7 @@
                     @click="remove(game)">
                     Löschen</UButton>
             </template>
-        </UCard>‚
+        </UCard>
         <NuxtLink to="intern/edit_game">
             <UButton icon="material-symbols:add-2-rounded" size="md" color="primary" variant="solid">
                 Spiel hinzufügen</UButton>
