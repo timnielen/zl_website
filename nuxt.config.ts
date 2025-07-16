@@ -1,7 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: [
     '~/assets/css/main.css'
   ],
@@ -50,10 +50,10 @@ export default defineNuxtConfig({
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
       REGISTRATION_IS_OPEN: process.env.REGISTRATION_IS_OPEN,
+      YEAR: process.env.YEAR,
     },
     SUPABASE_PRIVATE_KEY: process.env.SUPABASE_PRIVATE_KEY,
     EMAIL: process.env.EMAIL,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
-    YEAR: process.env.YEAR
   }
 })

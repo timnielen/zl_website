@@ -16,9 +16,13 @@
                             aria-label="Clear input" @click="globalFilter = ''" />
                     </template>
                 </UInput>
-                <UDropdownMenu :items="column_items" :content="{ align: 'end' }" :ui="{ content: 'max-h-96' }">
-                    <UButton label="Spalten" color="neutral" variant="subtle" trailing-icon="i-lucide-chevron-down" />
-                </UDropdownMenu>
+                <div class="flex gap-2">
+                    <UDropdownMenu :items="column_items" :content="{ align: 'end' }" :ui="{ content: 'max-h-96' }">
+                        <UButton label="Spalten" color="neutral" variant="subtle"
+                            trailing-icon="i-lucide-chevron-down" />
+                    </UDropdownMenu>
+                    <ToExcel :rows="registrations" name="Anmeldungen" :refresh="refresh" :column-visibility="columnVisibility"></ToExcel>
+                </div>
             </div>
 
             <UTable ref="myTable" v-model:column-visibility="columnVisibility" v-model:column-pinning="columnPinning"
@@ -44,7 +48,7 @@ import type { RowSchema } from '~/types/registration'
 import type { CellContext, HeaderContext } from '@tanstack/vue-table'
 import { title, type variant } from 'valibot'
 import ConfirmationButton from '~/components/ConfirmationButton.vue'
-import { Games, Scores } from '#components'
+import { Games, Scores, ToExcel } from '#components'
 
 definePageMeta({
     middleware: ['auth']
@@ -65,7 +69,7 @@ async function logOut() {
 const { data: registrations, refresh } = await useAsyncData("getRegistrations", async () => {
     const { data, error } = await supabase.from("numbered_participants")
         .select("*")
-        .order("number", {ascending: true})
+        .order("number", { ascending: true })
     if (error) throw error
     return data
 })
@@ -91,7 +95,7 @@ const column_items = computed<DropdownMenuItem[]>((): DropdownMenuItem[] => {
 })
 
 
-type Registration = RowSchema & { id: number, number:number, created_at: string, paid: boolean }
+type Registration = RowSchema & { id: number, number: number, created_at: string, paid: boolean }
 function yesno(column: string) {
     return ({ row }: CellContext<Registration, unknown>) => {
         const color = row.getValue(column) ? 'success' : 'error';
