@@ -51,9 +51,9 @@
                         <template #footer>
                             <div class="flex flex-col">
                                 <span>Jungs: {{team.players.reduce((total, player) => player.gender === "männlich" ?
-                                    total+1 : total, 0) }}</span>
+                                    total + 1 : total, 0)}}</span>
                                 <span>Mädchen: {{team.players.reduce((total, player) => player.gender !== "männlich" ?
-                                    total+1 : total, 0) }}</span>
+                                    total + 1 : total, 0)}}</span>
                                 <span>Durchschnittsalter: {{ getAverageAge(team) }} Jahre</span>
                                 <span class="text-primary-500">Anzahl Spieler: {{ team.players.length }}</span>
 
@@ -130,10 +130,16 @@ if (team_assignment.value) {
 }
 
 console.log(team_assignment.value)
-const players = reactive(participants.value?.map(({ id, name, sirname, gender, birthday }) => ({
-    id, name, sirname, gender, age: calculateAge(birthday),
-    team: team_assignment.value?.find(({ player_id }) => player_id === id)?.team || 0
-})) || [])
+const players = reactive(participants.value?.map(({ id, name, sirname, gender, birthday }) => {
+    let team = team_assignment.value?.find(({ player_id }) => player_id === id)?.team
+    if (team === undefined || team === null) {
+        team = -1 // Default to -1 if no team is assigned
+    }
+    return {
+        id, name, sirname, gender, age: calculateAge(birthday),
+        team: team
+    }
+}) || [])
 
 console.log(players)
 
