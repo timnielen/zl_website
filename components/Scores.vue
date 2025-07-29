@@ -1,7 +1,7 @@
 <template>
     <div class="flex gap-3">
         <ProseH2 class="inline">Ergebnisse</ProseH2>
-        <UButton icon="material-symbols:refresh" size="md" color="primary" variant="solid" @click="refresh_scores()" />
+        <UButton icon="material-symbols:refresh" size="md" color="neutral" variant="solid" @click="refresh_scores()" />
     </div>
     <UTable ref="myTable" :data="scores" />
 </template>

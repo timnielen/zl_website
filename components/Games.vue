@@ -1,4 +1,9 @@
 <template>
+    <div class="flex gap-3">
+        <ProseH2>Spiele</ProseH2>
+        <UButton icon="material-symbols:refresh" size="md" color="neutral" variant="solid" @click="refresh_games()" />
+        <ToExcel :sheets="sheets" :refresh="refresh_sheets" name="Spiele"></ToExcel>
+    </div>
     <div class="flex flex-wrap gap-4">
         <UCard v-for="(count, game) in team_counts" :key="game" variant="subtle">
             <template #header>
@@ -22,8 +27,9 @@
 </template>
 
 <script setup lang="ts">
-
+import { ToExcel } from '#components';
 import { createClient } from '@supabase/supabase-js'
+import type {Sheet} from '#components/ToExcel.vue';
 const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.public.SUPABASE_KEY)
 
@@ -34,20 +40,48 @@ const { data: saved_games, refresh: refresh_games } = await useAsyncData("getAva
     return data
 })
 
+
+
+
+
 console.log("games", saved_games.value)
 
 const team_counts = computed(() => {
-    return saved_games.value?.reduce((acc: any, { game, team }: any) => {
-        if (game in acc) {
-            acc[game] = Math.max(acc[game], team + 1)
+    return saved_games.value?.reduce((num_teams: any, { game, team }: any) => {
+        if (game in num_teams) {
+            num_teams[game] = Math.max(num_teams[game], team + 1)
         } else {
-            acc[game] = team + 1
+            num_teams[game] = team + 1
         }
-        return acc
+        return num_teams
     }, {})
 })
 
-console.log(team_counts.value)
+const { data: sheets, refresh: refresh_sheets } = await useAsyncData("getExcelSheet", async () => {
+    const { data, error } = await supabase.from("Teams")
+        .select("numbered_participants (name, sirname, number), game, team").order("game, team, numbered_participants(number)", )
+    if (error) throw error
+    let result: Sheet[] = []
+    for (const [game, num_teams] of Object.entries(team_counts.value)) {
+        const game_data = data.filter((row: any) => row.game === game)
+        let rows = []
+        for (let num_team = 0; num_team < num_teams; num_team++) {
+            game_data.filter((row: any) => row.team === num_team).forEach(({numbered_participants: p}, index) => {
+                name = `${p.name} ${p.sirname}`
+                if (index >= rows.length ) {
+                    rows.push({})
+                }
+                rows[index][`Team ${num_team+1}`] = name
+            })
+        }
+        result.push({
+            name: game,
+            rows,
+            columnVisibility: {}
+        })
+    }
+    return result
+})
 
 const toast = useToast()
 async function remove(game: String) {

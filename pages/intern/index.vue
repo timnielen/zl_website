@@ -21,7 +21,7 @@
                         <UButton label="Spalten" color="neutral" variant="subtle"
                             trailing-icon="i-lucide-chevron-down" />
                     </UDropdownMenu>
-                    <ToExcel :rows="registrations" name="Anmeldungen" :refresh="refresh" :column-visibility="columnVisibility"></ToExcel>
+                    <ToExcel name="Anmeldungen" :sheets="[{ name: 'Anmeldungen', rows: registrations, columnVisibility }]" :refresh="refresh"></ToExcel>
                 </div>
             </div>
 
@@ -33,7 +33,6 @@
         </div>
 
         <USeparator />
-        <ProseH2>Spiele</ProseH2>
         <Games></Games>
         <USeparator />
         <Scores></Scores>

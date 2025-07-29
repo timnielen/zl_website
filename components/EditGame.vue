@@ -10,7 +10,7 @@
                 <UFormField label="Anzahl Teams" name="num_teams">
                     <div class="flex gap-1">
                         <UInput v-model="game.num_teams" type="number" @change="createTeams()" />
-                        <UButton icon="material-symbols:refresh" size="md" color="primary" variant="solid"
+                        <UButton icon="material-symbols:refresh" size="md" color="neutral" variant="solid"
                             @click="createTeams()" />
                     </div>
                 </UFormField>

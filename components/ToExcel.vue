@@ -1,21 +1,29 @@
 <template>
-<UButton icon="material-symbols:download" @click="to_xlsx(props.name, props.rows, props.columnVisibility)">Excel</UButton>
+    <UButton icon="material-symbols:download" @click="to_xlsx(props.name, props.sheets, props.refresh)">Excel
+    </UButton>
 </template>
 
 <script setup lang="ts">
 import XLSX from "xlsx";
 
+interface Sheet {
+    name: string;
+    rows: any[];
+    columnVisibility?: Record<string, boolean>;
+}
+
 const props = defineProps<{
     name: string,
-    rows: any[] | null,
+    sheets: Sheet[],
     refresh: () => Promise<void>,
-    columnVisibility: Record<string, boolean>
 }>()
 const runtimeConfig = useRuntimeConfig()
 
-async function to_xlsx(name: string, rows: any[] | null, columnVisibility: Record<string, boolean>) {
-    await props.refresh()
-    if (!rows || rows.length === 0) {
+
+async function to_xlsx(name: string, sheets: Sheet[], refresh: () => Promise<void>) {
+    await refresh()
+    console.log(sheets)
+    if (!sheets || sheets.length === 0) {
         useToast().add({
             title: "Keine Daten zum Exportieren",
             description: "Die Tabelle enthält keine Daten.",
@@ -24,17 +32,21 @@ async function to_xlsx(name: string, rows: any[] | null, columnVisibility: Recor
         });
         return;
     }
-    const worksheet = XLSX.utils.json_to_sheet(rows.map(row => {
-        const filteredRow: Record<string, any> = {};
-        for (const [key, value] of Object.entries(row)) {
-            if (!(key in columnVisibility) || columnVisibility[key] === true) {
-                filteredRow[key] = value;
-            }
-        }
-        return filteredRow;
-    }), { skipHeader: false });
+
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Anmeldungen');
+    for (const { name, rows, columnVisibility } of sheets) {
+
+        const worksheet = XLSX.utils.json_to_sheet(rows.map(row => {
+            const filteredRow: Record<string, any> = {};
+            for (const [key, value] of Object.entries(row)) {
+                if (!(key in columnVisibility) || columnVisibility[key] === true) {
+                    filteredRow[key] = value;
+                }
+            }
+            return filteredRow;
+        }), { skipHeader: false });
+        XLSX.utils.book_append_sheet(workbook, worksheet, name);
+    }
 
     // Generate Excel file as Blob
     const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
