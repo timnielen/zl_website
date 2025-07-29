@@ -4,8 +4,8 @@
                 <ProseH1 v-if="!props.game" class="text-primary-500">Spiel erstellen</ProseH1>
                 <ProseH1 v-else class="text-primary-500">{{ props.game }}</ProseH1>
                 <USeparator />
-                <UFormField v-if="!props.game" label="Spielname" name="name">
-                    <UInput v-model="game.name" placeholder="Fuchsjagd" />
+                <UFormField label="Spielname" name="name">
+                    <UInput v-model="game.name" placeholder="Fuchsjagd (max. 30 Zeichen)" />
                 </UFormField>
                 <UFormField label="Anzahl Teams" name="num_teams">
                     <div class="flex gap-1">
@@ -289,6 +289,10 @@ function saveError(error: any) {
 async function save() {
     if (!game.name) {
         saveError("Bitte wähle zunächst einen Spielnamen.")
+        return
+    }
+    if (game.name.length > 30) {
+        saveError("Der Spielname darf maximal 30 Zeichen lang sein.")
         return
     }
     saving.value = true
