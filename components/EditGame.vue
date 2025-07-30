@@ -1,6 +1,6 @@
 <template>
     <TextSection>
-        <ULink to="/intern"><- Zurück zur Übersicht</ULink>
+        <ULink to="/intern"><- Zurück zur Übersicht </ULink>
                 <ProseH1 v-if="!props.game" class="text-primary-500">Spiel erstellen</ProseH1>
                 <ProseH1 v-else class="text-primary-500">{{ props.game }}</ProseH1>
                 <USeparator />

@@ -57,7 +57,7 @@ const team_counts = computed(() => {
     }, {})
 })
 
-const { data: sheets, refresh: refresh_sheets } = await useAsyncData("getExcelSheet", async () => {
+const { data: sheets, refresh: refresh_sheets } = await useAsyncData("getTeamsForExcel", async () => {
     const { data, error } = await supabase.from("Teams")
         .select("numbered_participants (name, sirname, number), game, team").order("game, team, numbered_participants(number)", )
     if (error) throw error

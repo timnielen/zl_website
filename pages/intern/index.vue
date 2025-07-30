@@ -36,6 +36,8 @@
         <Games></Games>
         <USeparator />
         <Scores></Scores>
+        <USeparator />
+        <ProseH2><ULink to="/intern/dish_service">Spüldienst</ULink></ProseH2>
     </TextSection>
 </template>
 
@@ -72,7 +74,6 @@ const { data: registrations, refresh } = await useAsyncData("getRegistrations", 
     if (error) throw error
     return data
 })
-console.log(registrations.value)
 
 const table = useTemplateRef('myTable')
 
