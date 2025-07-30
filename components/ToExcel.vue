@@ -17,7 +17,6 @@ const props = defineProps<{
     sheets: Sheet[],
     refresh: () => Promise<void>,
 }>()
-const runtimeConfig = useRuntimeConfig()
 
 
 async function to_xlsx(name: string, sheets: Sheet[], refresh: () => Promise<void>) {
@@ -56,7 +55,7 @@ async function to_xlsx(name: string, sheets: Sheet[], refresh: () => Promise<voi
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${name}_${runtimeConfig.public.YEAR}_${new Date().getTime()}.xlsx`;
+    a.download = `${name}_${new Date().getTime()}.xlsx`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
