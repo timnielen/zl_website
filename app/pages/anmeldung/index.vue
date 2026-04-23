@@ -186,11 +186,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const formData = new FormData()
     const uploadName = `${rowData.name}_${rowData.sirname}_einverstaendniserklaerung`
     formData.append('consent', consent, uploadName)
-
-    for (const [key, value] of Object.entries(rowData)) {
-        if (value === undefined || value === null) continue
-        formData.append(key, Array.isArray(value) ? JSON.stringify(value) : String(value))
-    }
+    formData.append('data', JSON.stringify(rowData))
 
     loading.value = true
 

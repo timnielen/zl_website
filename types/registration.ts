@@ -1,4 +1,3 @@
-import type { Form } from '@nuxt/ui'
 import * as v from 'valibot'
 
 type OptionValue = string | number | boolean
@@ -31,8 +30,9 @@ export interface RegistrationState {
     email: string
     swimmer: string
     fitness: boolean
+    group_activity_consent: boolean
+    
     food: string
-
     diseases_allergies: string
     wound_care?: boolean
     pull_ticks?: boolean
@@ -55,7 +55,6 @@ export interface RegistrationState {
     emergency_2_email: string
 
     photos: string
-    group_activity_consent: boolean
     privacy_agreement: boolean
     consent_filename: string
     consent: File | Blob | null
@@ -101,32 +100,13 @@ export interface RegistrationStageConfig {
     elements: RegistrationStageElement[]
 }
 
-export type RegistrationDbColumnType = 'text' | 'boolean' | 'integer' | 'text[]'
-
-export interface RegistrationDbColumn {
-    name: string
-    type: RegistrationDbColumnType
-}
-
-export type PersistedRegistrationState = Omit<RegistrationState, 'consent'>
 
 const genderValues = ['männlich', 'weiblich', 'divers'] as const
 const swimmerValues = ["Schwimmer/in", "Schwimmanfänger/in", "Nichtschwimmer/in"] as const
 const foodValues = ["alles", "vegan", "vegetarisch", "kein Schweinefleisch"] as const
-const diseaseValues = [
-    "Herzbeschwerden, bekannte Herzfehler, Herzkrankheiten, Blutdruckanomalien",
-    "Asthma, Bronchitis oder ähnliche Beschwerden der Atemwege",
-    "Diabetes oder andere Stoffwechselerkrankungen",
-    "Schwindelzustände, Ohnmachtsanfälle, Migräne, häufig starke Kopfschmerzen",
-    "Epilepsie",
-    "Allergien (auch Lebensmittel- und/oder Medikamentenallergie)",
-    "Sonstige"
- ] as const
-
 const genders = [...genderValues]
 const swimLevels = [...swimmerValues]
 const foodOptions = [...foodValues]
-const diseases = [...diseaseValues]
 
 const yesno: FormOption<boolean>[] = [{ value: true, label: "Ja" }, { value: false, label: "Nein" }]
 const arrival: FormOption<boolean>[] = [{value: true, label: "Ja"}, {value: false, label: "Nein, mein Kind braucht eine Mitfahrgelegenheit"}]
@@ -153,7 +133,7 @@ const row_schema = v.object({
     swimmer: v.pipe(v.string(), v.picklist(toPicklist(swimmerValues), 'Bitte wählen Sie eine Schwimmstufe aus')),
     food: v.pipe(v.string(), v.picklist(toPicklist(foodValues), 'Bitte wählen Sie eine Ernährungsweise aus')),
 
-    diseases: v.optional(v.array(v.string())),
+    diseases_allergies: v.optional(v.string()),
     wound_care: v.boolean('Bitte wählen Sie eine Option'),
     pull_ticks: v.boolean('Bitte wählen Sie eine Option'),
     vaccination_tetanus: v.optional(v.boolean()),
@@ -230,7 +210,15 @@ const registrationStages: RegistrationStageConfig[] = [
                 label: 'Fitness',
                 required: true,
                 checkboxLabel: 'Der/Die Teilnehmer/in ist in einer gesunden körperlichen und psychischen Verfassung und kann und darf grundsätzlich an Freizeitaktivitäten wie Wandern, Sport, Gelände- und Waldspielen, Schwimmbadbesuch etc. uneingeschränkt teilnehmen'
-            }
+            },
+            {
+                kind: 'field',
+                key: 'group_activity_consent',
+                fieldType: 'checkbox',
+                label: 'Gruppenaktivitäten',
+                required: true,
+                checkboxLabel: 'Ich bin damit einverstanden, dass der/die Teilnehmer/in zusammen mit mindestens zwei weiteren Teilnehmer/innen und dem Wissen der Verantwortlichen zeitweise ohne Betreuer auf bekannten oder gekennzeichneten Wegen gehen darf. '
+            },
         ]
     },
     {
@@ -245,14 +233,6 @@ const registrationStages: RegistrationStageConfig[] = [
             { kind: 'field', key: 'pull_ticks', fieldType: 'radio', label: 'Zecken dürfen gezogen werden?', required: true, items: yesno },
             { kind: 'field', key: 'vaccination_tetanus', fieldType: 'checkbox', label: 'Impfstatus', description: 'Welche Impfungen hat Ihr Kind erhalten?', checkboxLabel: 'Tetanus-Impfung'},
             { kind: 'field', key: 'vaccination_fsme', fieldType: 'checkbox', checkboxLabel: 'FSME/Zecken-Impfung'},
-            {
-                kind: 'field',
-                key: 'group_activity_consent',
-                fieldType: 'checkbox',
-                label: 'Aufsichtspflicht: Gruppenaktivitäten',
-                required: true,
-                checkboxLabel: 'Der/die Teilnehmer/in darf zusammen mit mindestens zwei weiteren Teilnehmer/innen und dem Wissen der Verantwortlichen zeitweise ohne Betreuer auf bekannten oder gekennzeichneten Wegen gehen. Für diesen Zeitraum sind die Verantwortlichen von der Aufsichtspflicht entbunden.'
-            },
             { kind: 'field', key: 'contact_doctor', fieldType: 'textarea', label: 'Kontaktdaten Hausarzt', required: true }
         ]
     },
@@ -348,35 +328,36 @@ function defaultRegistrationState(): RegistrationState {
         gender: '',
         birthday: '',
         address: '',
+        plz: '',
+        city: '',
         email: '',
         swimmer: '',
+        fitness: false,
         food: '',
-        diseases: [],
-        disease_description: '',
+        diseases_allergies: '',
         wound_care: undefined,
         pull_ticks: undefined,
-        vaccination: undefined,
-        vaccination_description: '',
+        vaccination_tetanus: undefined,
+        vaccination_fsme: undefined,
         contact_doctor: '',
-        arrival: '',
-        arrival_driver: '',
-        arrival_places: undefined,
-        arrival_baggage: '',
+        arrival: false,
         return_driver: '',
-        return_places: undefined,
-        return_baggage: '',
-        emergency_name: '',
-        emergency_relationship: '',
-        emergency_phone_number: '',
-        emergency_email: '',
+        places_arrival: undefined,
+        places_return: undefined,
+        emergency_1_name: '',
+        emergency_1_relationship: '',
+        emergency_1_phone_number: '',
+        emergency_1_email: '',
+        emergency_2_name: '',
+        emergency_2_relationship: '',
+        emergency_2_phone_number: '',
+        emergency_2_email: '',
         photos: '',
-        fitness: false,
         group_activity_consent: false,
         privacy_agreement: false,
         consent_filename: '',
         consent: null,
         comments: '',
-        invitation_next_year: false
     }
 }
 
@@ -405,48 +386,6 @@ function getStageFieldKeys(stage: RegistrationStageConfig, state: RegistrationSt
     return keys
 }
 
-export const registrationStateColumnTypes: Record<keyof PersistedRegistrationState, RegistrationDbColumnType> = {
-    name: 'text',
-    sirname: 'text',
-    gender: 'text',
-    birthday: 'text',
-    address: 'text',
-    email: 'text',
-    swimmer: 'text',
-    food: 'text',
-    diseases: 'text[]',
-    disease_description: 'text',
-    wound_care: 'boolean',
-    pull_ticks: 'boolean',
-    vaccination: 'boolean',
-    vaccination_description: 'text',
-    contact_doctor: 'text',
-    arrival: 'text',
-    arrival_driver: 'text',
-    arrival_places: 'integer',
-    arrival_baggage: 'text',
-    return_driver: 'text',
-    return_places: 'integer',
-    return_baggage: 'text',
-    emergency_name: 'text',
-    emergency_relationship: 'text',
-    emergency_phone_number: 'text',
-    emergency_email: 'text',
-    photos: 'text',
-    fitness: 'boolean',
-    group_activity_consent: 'boolean',
-    privacy_agreement: 'boolean',
-    consent_filename: 'text',
-    comments: 'text',
-    invitation_next_year: 'boolean'
-}
-
-export function getRegistrationTableColumnsFromState(): RegistrationDbColumn[] {
-    return Object.entries(registrationStateColumnTypes).map(([name, type]) => ({
-        name,
-        type
-    }))
-}
 
 export type Schema = v.InferOutput<typeof schema>
 export type RowSchema = v.InferOutput<typeof row_schema>
@@ -456,7 +395,6 @@ export {
     row_schema,
     file_schema,
     arrival,
-    diseases,
     foodOptions,
     genders,
     photos,
