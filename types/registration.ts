@@ -36,8 +36,8 @@ export interface RegistrationState {
     diseases_allergies: string
     wound_care?: boolean
     pull_ticks?: boolean
-    vaccination_tetanus?: boolean
-    vaccination_fsme?: boolean
+    vaccination_tetanus: boolean
+    vaccination_fsme: boolean
     contact_doctor: string
 
     arrival: boolean
@@ -136,8 +136,8 @@ const row_schema = v.object({
     diseases_allergies: v.optional(v.string()),
     wound_care: v.boolean('Bitte wählen Sie eine Option'),
     pull_ticks: v.boolean('Bitte wählen Sie eine Option'),
-    vaccination_tetanus: v.optional(v.boolean()),
-    vaccination_fsme: v.optional(v.boolean()),
+    vaccination_tetanus: v.optional(v.boolean(), false),
+    vaccination_fsme: v.optional(v.boolean(), false),
     contact_doctor: v.pipe(v.string(), v.minLength(2, 'Bitte geben Sie die Kontaktdaten des Hausarztes ein')),
 
     arrival: v.boolean('Bitte wählen Sie eine Option'),
@@ -337,8 +337,8 @@ function defaultRegistrationState(): RegistrationState {
         diseases_allergies: '',
         wound_care: undefined,
         pull_ticks: undefined,
-        vaccination_tetanus: undefined,
-        vaccination_fsme: undefined,
+        vaccination_tetanus: false,
+        vaccination_fsme: false,
         contact_doctor: '',
         arrival: false,
         return_driver: '',

@@ -146,7 +146,7 @@ function generateEmailText(data: RowSchema, registrationYear: number) {
 hiermit bestätigen wir deine Anmeldung fürs Zeltlager ${registrationYear}. Wir freuen uns schon tierisch auf dich!
 
 Anbei findet ihr nochmal die Reisebedingungen und die Packliste, sowie die Wegbeschreibungen zu Kirche & Zeltplatz.
-Der Elternabend findet am 23.06.2025 um 18:00 Uhr im Pfarrheim neben der Kirche statt.
+Der Elternabend findet am 06.07.2026 um 18:00 Uhr im Pfarrheim neben der Kirche statt.
 
 Wir haben die folgenden Daten von dir erhalten:
 
