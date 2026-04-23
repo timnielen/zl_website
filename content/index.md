@@ -13,7 +13,7 @@ img_alpha: 70
 **Abenteuer, Lagerfeuer und leckeres Essen**
 
 Alter: 8 bis 18 Jahre  
-Datum: 02. - 09. August 2025
+Datum: 01. - 08. August 2026
 ::
 
 ::TextSection
