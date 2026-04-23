@@ -5,8 +5,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ key: route => route.fullPath })
+
 const route = useRoute()
-const { data: page } = await useAsyncData(() => route.path, () => queryCollection('pages').path(route.path).first())
+const { data: page } = await useAsyncData(route.path, () => queryCollection('pages').path(route.path).first())
 useHead({
   title: page.value?.seo?.title,
   meta: [
