@@ -3,25 +3,17 @@ title: "Zeltlager Milbertshofen 2025"
 description: 'Im August 2025 findet das jährliche Zeltlager der KjG Ortsgruppe Zeltlager Milbertshofen statt. Hier findest du alle Informationen und kannst dich anmelden.'
 ---
 
-::HeroSection
+::ZeltlagerHero
 ---
 img_src: img/lager/hero.jpg
 img_alt: Der Zeltplatz zum Sonnenuntergang
 img_alpha: 70
-#link:
-#    to: /anmeldung
-#    value: Jetzt Anmelden
-class: bg-black
 ---
-# Zeltlager 2025
 
 **Abenteuer, Lagerfeuer und leckeres Essen**
 
 Alter: 8 bis 18 Jahre  
 Datum: 02. - 09. August 2025
-
-#Der Anmeldezeitraum beginnt am 01. Mai 2025
-Der Anmeldezeitraum ist zuende.
 ::
 
 ::TextSection
