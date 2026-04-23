@@ -40,7 +40,7 @@ export interface RegistrationState {
     vaccination_fsme: boolean
     contact_doctor: string
 
-    arrival: boolean
+    arrival?: boolean
     return_driver: string
     places_arrival?: number
     places_return?: number
@@ -365,7 +365,7 @@ function defaultRegistrationState(): RegistrationState {
         vaccination_tetanus: false,
         vaccination_fsme: false,
         contact_doctor: '',
-        arrival: false,
+        arrival: undefined,
         return_driver: '',
         places_arrival: undefined,
         places_return: undefined,
