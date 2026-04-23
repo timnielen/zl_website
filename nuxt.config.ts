@@ -8,11 +8,7 @@ export default defineNuxtConfig({
   ui: {
     colorMode: false
   },
-  content: {
-    preview: {
-      api: 'https://api.nuxt.studio'
-    }
-  },
+  content: {},
   vite: {
     plugins: [
       tailwindcss()
@@ -20,7 +16,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     prerender: {
-      crawlLinks: true
+      routes: ['/', '/datenschutz', '/impressum']
     },
   },
 
@@ -30,7 +26,6 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/content",
     "@nuxtjs/sitemap",
-    "nuxt-studio"
   ],
   app: {
     head: {
