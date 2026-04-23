@@ -150,9 +150,9 @@ function jumpToStep(value: string | number | undefined) {
         return
     }
 
-    // for (let stepIndex = currentStep.value; stepIndex < index; stepIndex++) {
-    //     if (!validateStep(stepIndex)) return
-    // }
+    for (let stepIndex = currentStep.value; stepIndex < index; stepIndex++) {
+        if (!validateStep(stepIndex)) return
+    }
 
     currentStep.value = index
 }
