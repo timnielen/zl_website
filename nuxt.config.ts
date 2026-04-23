@@ -29,7 +29,8 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@nuxt/image",
     "@nuxt/content",
-    "@nuxtjs/sitemap"
+    "@nuxtjs/sitemap",
+    "nuxt-studio"
   ],
   app: {
     head: {
