@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { login_schema, type LoginSchema } from '~/types/login';
+import { login_schema, type LoginSchema } from '~~/types/login';
 import type { FormSubmitEvent } from '#ui/types'
 import { createClient } from '@supabase/supabase-js'
 

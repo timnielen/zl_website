@@ -45,6 +45,8 @@
 </template>
 
 <script setup lang="ts">
+import { getRegistrationPeriodFromRuntimeConfig, isRegistrationOpenAt } from '~~/utils/registration-period'
+
 const items = [{
     label: 'Anmeldung',
     to: '/anmeldung',
@@ -57,7 +59,8 @@ const items = [{
 }]
 
 const runtimeConfig = useRuntimeConfig()
-if(runtimeConfig.public.REGISTRATION_IS_OPEN !== "TRUE") {
+const registrationPeriod = getRegistrationPeriodFromRuntimeConfig(runtimeConfig.public)
+if (!isRegistrationOpenAt(registrationPeriod.startDate, registrationPeriod.endDate)) {
     items.shift()
 }
 </script>

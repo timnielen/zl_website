@@ -50,8 +50,8 @@ export default defineNuxtConfig({
     public: {
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
-      REGISTRATION_IS_OPEN: process.env.REGISTRATION_IS_OPEN,
-      YEAR: process.env.YEAR,
+      REGISTRATION_START_DATE: process.env.REGISTRATION_START_DATE,
+      REGISTRATION_END_DATE: process.env.REGISTRATION_END_DATE,
     },
     SUPABASE_PRIVATE_KEY: process.env.SUPABASE_PRIVATE_KEY,
     EMAIL: process.env.EMAIL,

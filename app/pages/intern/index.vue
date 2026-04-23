@@ -45,7 +45,7 @@
 import { UBadge, UButton, UCheckbox } from '#components'
 import type { DropdownMenuItem, TableColumn, } from '@nuxt/ui'
 import { createClient } from '@supabase/supabase-js'
-import type { RowSchema } from '~/types/registration'
+import type { RowSchema } from '~~/types/registration'
 import type { CellContext, HeaderContext } from '@tanstack/vue-table'
 import { title, type variant } from 'valibot'
 import ConfirmationButton from '~/components/ConfirmationButton.vue'
