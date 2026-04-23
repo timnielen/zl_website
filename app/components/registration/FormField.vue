@@ -67,15 +67,13 @@
             </template>
         </UCheckbox>
 
-        <UInput
-            v-else-if="field.fieldType === 'file'"
-            type="file"
-            :accept="field.accept"
-            class="w-full"
-            @change="onFileChange"
-        />
+        <UFileUpload 
+            v-else-if="field.fieldType === 'file'" 
+            v-model="state.consent" 
+            :accept="field.accept" 
+            class="min-h-48" />
 
-        <template v-if="field.fieldType === 'file'" #label>
+        <template v-if="field.fieldType === 'file'" #description>
             Lesen Sie nun bitte die
             <a href="/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf" target="_blank">Reisebestimmungen</a>
             aufmerksam durch. Daraufhin bitten wir Sie darum die
@@ -93,6 +91,7 @@ const { field, state } = defineProps<{
     state: RegistrationState
 }>()
 
+const fileInputRef = ref<HTMLInputElement | null>(null)
 const isVisible = computed(() => !field.visibleWhen || field.visibleWhen(state))
 
 const model = computed({
@@ -101,14 +100,6 @@ const model = computed({
         state[field.key] = value as never
     }
 })
-
-function onFileChange(event: Event) {
-    const target = event.target as HTMLInputElement
-    const file = target.files?.[0]
-
-    state.consent = file ?? null
-    state.consent_filename = file?.name ?? ''
-}
 </script>
 
 <style scoped>

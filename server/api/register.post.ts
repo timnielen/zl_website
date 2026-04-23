@@ -1,7 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js'
-import { file_schema, row_schema } from '~~/types/registration'
-import type { RowSchema } from '~~/types/registration'
+import { file_schema, sql_schema } from '~~/types/registration'
+import type { SQLSchema } from '~~/types/registration'
 import { getRegistrationPeriodFromRuntimeConfig, isRegistrationOpenAt } from '~~/utils/registration-period'
 import mail from 'nodemailer'
 import * as v from 'valibot'
@@ -11,13 +11,18 @@ const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.SUPABASE_PRIVATE_KEY)
 
 const transporter = mail.createTransport({
-    host: 'mail.gmx.net',
-    port: 587,
-    secure: false,
+    service: runtimeConfig.EMAIL_SERVICE,
     auth: {
         user: runtimeConfig.EMAIL,
-        pass: runtimeConfig.EMAIL_PASSWORD,
-    },
+        pass: runtimeConfig.EMAIL_PASSWORD
+    }
+})
+
+console.log('Verifying connection...')
+transporter.verify().then(() => {
+    console.log('Connection to email service verified successfully.')
+}).catch((error) => {
+    console.error('Error verifying connection to email service:', error)
 })
 
 const publicPath = process.env.VERCEL_PROJECT_PRODUCTION_URL
@@ -98,9 +103,9 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, statusMessage: "Couldn't upload file. Please try again later." })
     }
 
-    let parsedRow: RowSchema
+    let parsedRow: SQLSchema
     try {
-        parsedRow = v.parse(row_schema, { ...data, consent_filename: uploadData.path })
+        parsedRow = v.parse(sql_schema, { ...data, consent_filename: uploadData.path })
     } catch (e) {
         console.error(e)
         throw createError({ statusCode: 400, statusMessage: 'Invalid or missing form data' })
@@ -140,7 +145,7 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 201)
 })
 
-function generateEmailText(data: RowSchema, registrationYear: number) {
+function generateEmailText(data: SQLSchema, registrationYear: number) {
     return `Liebe(r) ${data.name},
 
 hiermit bestätigen wir deine Anmeldung fürs Zeltlager ${registrationYear}. Wir freuen uns schon tierisch auf dich!

@@ -56,8 +56,7 @@ export interface RegistrationState {
 
     photos: string
     privacy_agreement: boolean
-    consent_filename: string
-    consent: File | Blob | null
+    consent: File | null
     comments: string
 }
 
@@ -91,7 +90,19 @@ export interface RegistrationInfoConfig {
     className?: string
 }
 
-export type RegistrationStageElement = RegistrationFieldConfig | RegistrationFieldRowConfig | RegistrationInfoConfig
+export interface RegistrationCheckboxGroupConfig {
+    kind: 'checkboxgroup'
+    label?: string
+    description?: string
+    required?: boolean
+    className?: string
+    fields: Array<{
+        key: keyof RegistrationState
+        label: string
+    }>
+}
+
+export type RegistrationStageElement = RegistrationFieldConfig | RegistrationFieldRowConfig | RegistrationInfoConfig | RegistrationCheckboxGroupConfig
 
 export interface RegistrationStageConfig {
     id: string
@@ -120,7 +131,7 @@ const photos = [
 const toPicklist = <T extends OptionValue>(values: readonly T[]) => values as [T, ...T[]]
 const photoValues = toPicklist(photos.map((item) => item.value))
 
-const row_schema = v.object({
+const form_schema = v.object({
     name: v.pipe(v.string(), v.minLength(2, 'Der Vorname muss mindestens 2 Zeichen lang sein')),
     sirname: v.pipe(v.string(), v.minLength(2, 'Der Nachname muss mindestens 2 Zeichen lang sein')),
     gender: v.pipe(v.string(), v.picklist(toPicklist(genderValues), 'Bitte wählen Sie ein Geschlecht aus')),
@@ -157,8 +168,12 @@ const row_schema = v.object({
     photos: v.pipe(v.string(), v.picklist(photoValues, 'Bitte wählen Sie eine Option aus')),
     group_activity_consent: v.literal(true, "Bitte geben Sie uns hier Ihre Einverständnins"),
     privacy_agreement: v.literal(true, "Bitte geben Sie uns hier Ihre Einverständnins"),
-    consent_filename: v.string(),
     comments: v.optional(v.string()),
+})
+
+const sql_schema = v.object({
+    ...form_schema.entries,
+    consent_filename: v.string()
 })
 
 const file_schema = v.object({
@@ -170,7 +185,7 @@ const file_schema = v.object({
 })
 
 const schema = v.intersect([
-    row_schema,
+    form_schema,
     file_schema
 ])
 
@@ -231,8 +246,15 @@ const registrationStages: RegistrationStageConfig[] = [
 
             { kind: 'field', key: 'wound_care', fieldType: 'radio', label: 'Wundversorgung', description: 'Oberflächliche Wunden dürfen mit handelsüblichen Desinfektionsmitteln und Wundschnellverband versorgt werden?', required: true, items: yesno },
             { kind: 'field', key: 'pull_ticks', fieldType: 'radio', label: 'Zecken dürfen gezogen werden?', required: true, items: yesno },
-            { kind: 'field', key: 'vaccination_tetanus', fieldType: 'checkbox', label: 'Impfstatus', description: 'Welche Impfungen hat Ihr Kind erhalten?', checkboxLabel: 'Tetanus-Impfung'},
-            { kind: 'field', key: 'vaccination_fsme', fieldType: 'checkbox', checkboxLabel: 'FSME/Zecken-Impfung'},
+            {
+                kind: 'checkboxgroup',
+                label: 'Impfstatus',
+                description: 'Welche Impfungen hat Ihr Kind erhalten?',
+                fields: [
+                    { key: 'vaccination_tetanus', label: 'Tetanus-Impfung' },
+                    { key: 'vaccination_fsme', label: 'FSME/Zecken-Impfung' },
+                ]
+            },
             { kind: 'field', key: 'contact_doctor', fieldType: 'textarea', label: 'Kontaktdaten Hausarzt', required: true }
         ]
     },
@@ -302,11 +324,14 @@ const registrationStages: RegistrationStageConfig[] = [
         description: 'Fotoeinwilligung, Reisebestimmungen und Datenschutzerklärung.',
         elements: [
             {
-                kind: 'info',
-                className: 'text-sm',
-                content: 'Während des Lagers machen wir viele Bilder. Bitte wählen Sie aus, ob Aufnahmen gemacht und ggf. online veröffentlicht werden dürfen.'
+                kind: 'row',
+                label: 'Fotos',
+                description: 'Während des Lagers machen wir viele Bilder. Bitte wählen Sie aus, ob Aufnahmen gemacht und ggf. online veröffentlicht werden dürfen.',
+                fields: [
+                    { kind: 'field', key: 'photos', fieldType: 'radio', label: 'Von dem/der Teilnehmenden dürfen', required: true, items: [...photos] }
+                ]
+
             },
-            { kind: 'field', key: 'photos', fieldType: 'radio', label: 'Von dem/der Teilnehmenden dürfen', required: true, items: [...photos] },
             {
                 kind: 'field',
                 key: 'consent',
@@ -355,7 +380,6 @@ function defaultRegistrationState(): RegistrationState {
         photos: '',
         group_activity_consent: false,
         privacy_agreement: false,
-        consent_filename: '',
         consent: null,
         comments: '',
     }
@@ -376,6 +400,13 @@ function getStageFieldKeys(stage: RegistrationStageConfig, state: RegistrationSt
             continue
         }
 
+        if (element.kind === 'checkboxgroup') {
+            for (const field of element.fields) {
+                keys.push(field.key)
+            }
+            continue
+        }
+
         for (const field of element.fields) {
             if (!field.visibleWhen || field.visibleWhen(state)) {
                 keys.push(field.key)
@@ -388,12 +419,14 @@ function getStageFieldKeys(stage: RegistrationStageConfig, state: RegistrationSt
 
 
 export type Schema = v.InferOutput<typeof schema>
-export type RowSchema = v.InferOutput<typeof row_schema>
+export type FormSchema = v.InferOutput<typeof form_schema>
+export type SQLSchema = v.InferOutput<typeof sql_schema>
 export type FileSchema = v.InferOutput<typeof file_schema>
 export {
     schema,
-    row_schema,
+    form_schema,
     file_schema,
+    sql_schema,
     arrival,
     foodOptions,
     genders,

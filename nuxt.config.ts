@@ -56,5 +56,6 @@ export default defineNuxtConfig({
     SUPABASE_PRIVATE_KEY: process.env.SUPABASE_PRIVATE_KEY,
     EMAIL: process.env.EMAIL,
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+    EMAIL_SERVICE: process.env.EMAIL_SERVICE,
   }
 })

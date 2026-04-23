@@ -22,10 +22,6 @@
                     <p v-if="element.kind === 'info'" :class="element.className ?? 'info-text'">{{ element.content }}</p>
 
                     <div v-else-if="element.kind === 'row'" :class="element.className ?? 'field-row'">
-                        <!-- <UFormField
-                            :label="element.label"
-                            :description="element.description"
-                        > -->
                         <div class="col-span-full" v-if="element.label || element.description">
                             <h3 v-if="element.label" class="row-title">{{ element.label }}</h3>
                             <p v-if="element.description" class="row-description">{{ element.description }}</p>
@@ -38,6 +34,8 @@
                         />
                         <!-- </UFormField> -->
                     </div>
+
+                    <RegistrationCheckboxGroup v-else-if="element.kind === 'checkboxgroup'" :config="element" :state="state" />
 
                     <RegistrationFormField v-else :field="element" :state="state" />
                 </template>
@@ -152,9 +150,9 @@ function jumpToStep(value: string | number | undefined) {
         return
     }
 
-    for (let stepIndex = currentStep.value; stepIndex < index; stepIndex++) {
-        if (!validateStep(stepIndex)) return
-    }
+    // for (let stepIndex = currentStep.value; stepIndex < index; stepIndex++) {
+    //     if (!validateStep(stepIndex)) return
+    // }
 
     currentStep.value = index
 }
@@ -256,7 +254,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     @apply flex flex-wrap gap-3 pt-2;
 }
 .row-title {
-    @apply text-lg font-semibold col-span-full;
+    @apply text-sm font-semibold col-span-full;
 }
 .row-description {
     @apply text-sm text-gray-600 mb-2 col-span-full;
