@@ -8,10 +8,17 @@
         :class="field.className"
     >
         <UInput
-            v-if="field.fieldType === 'text' || field.fieldType === 'email' || field.fieldType === 'date' || field.fieldType === 'tel'"
+            v-if="field.fieldType === 'text' || field.fieldType === 'email' || field.fieldType === 'tel'"
             v-model="model"
             :type="field.fieldType"
             :placeholder="field.placeholder"
+            class="w-full"
+        />
+
+        <UInputDate
+            v-else-if="field.fieldType === 'date'"
+            icon="i-lucide-calendar"
+            v-model="dateModel"
             class="w-full"
         />
 
@@ -84,6 +91,8 @@
 </template>
 
 <script setup lang="ts">
+import { parseDate } from '@internationalized/date'
+import type { DateValue } from '@internationalized/date'
 import type { RegistrationFieldConfig, RegistrationState } from '~~/types/registration'
 
 const { field, state } = defineProps<{
@@ -91,14 +100,20 @@ const { field, state } = defineProps<{
     state: RegistrationState
 }>()
 
-const fileInputRef = ref<HTMLInputElement | null>(null)
 const isVisible = computed(() => !field.visibleWhen || field.visibleWhen(state))
 
 const model = computed({
     get: () => state[field.key],
-    set: (value) => {
-        state[field.key] = value as never
-    }
+    set: (value) => { state[field.key] = value as never }
+})
+
+const dateModel = computed<DateValue | undefined>({
+    get: () => {
+        const val = state[field.key]
+        if (typeof val !== 'string' || !val) return undefined
+        try { return parseDate(val) } catch { return undefined }
+    },
+    set: (value) => { state[field.key] = (value?.toString() ?? '') as never }
 })
 </script>
 
