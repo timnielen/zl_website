@@ -1,6 +1,6 @@
 ---
-title: "Zeltlager Milbertshofen 2025"
-description: 'Im August 2025 findet das jährliche Zeltlager der KjG Ortsgruppe Zeltlager Milbertshofen statt. Hier findest du alle Informationen und kannst dich anmelden.'
+title: "Zeltlager Milbertshofen 2026"
+description: 'Im August 2026 findet das jährliche Zeltlager der KjG Ortsgruppe Zeltlager Milbertshofen statt. Hier findest du alle Informationen und kannst dich anmelden.'
 ---
 
 ::ZeltlagerHero
@@ -90,7 +90,7 @@ items:
 
     -   label: "Wann findet das Zeltlager statt?"
         icon: "i-material-symbols-calendar-month"
-        content: "Wir fahren jedes Jahr in der ersten Sommerferienwoche ins Zeltlager. In diesem Jahr findet das Zeltlager vom 02.08.2025 bis zum 09.08.2025 statt."
+        content: "Wir fahren jedes Jahr in der ersten Sommerferienwoche ins Zeltlager. In diesem Jahr findet das Zeltlager vom 01.08.2026 bis zum 08.08.2026 statt."
 
     -   label: "Was kostet das?"
         icon: "i-material-symbols-euro"
@@ -98,7 +98,7 @@ items:
 
     -   label: "Weitere Fragen?"
         icon: "i-material-symbols-contact-support-outline"
-        content: "Schreibt uns gerne eine E-Mail an zeltlager-milbertshofen@gmx.de oder wendet euch direkt per WhatsApp an  unsere Ortsgruppenleitung Johannes Heiß unter 0176 61906287."
+        content: "Schreibt uns gerne eine E-Mail an zeltlager.milbertshofen@gmail.com oder wendet euch direkt per WhatsApp an unsere Ortsgruppenleitung Johannes Heiß unter 0176 81229107."
 ---
 ::
 ::

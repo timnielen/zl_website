@@ -158,8 +158,8 @@ Wir haben die folgenden Daten von dir erhalten:
 ${Object.entries(data).map((entry) => `${entry[0]}: ${entry[1] || 'k. A.'}`).join('\n')}
 
 Bitte überprüfe nochmal, ob alles richtig ist. Wenn nicht, antworte auf diese E-Mail und korrigiere die falschen Angaben.
-Sollten bei dir oder deinen Eltern weitere Probleme oder Fragen auftreten, kontaktiert mich gerne direkt unter +49 176 81229107.
+Sollten bei dir oder deinen Eltern weitere Probleme oder Fragen auftreten, kontaktiert uns gerne direkt unter +49 176 81229107.
 
-LG Johannes Heiß
-(Ortsgruppenleitung der KjG Ortsgruppe Zeltlager Milbertshofen)`
+Liebe Grüße
+euer Zeltlager Team`
 }
