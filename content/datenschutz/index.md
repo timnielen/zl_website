@@ -17,7 +17,7 @@ Die Verarbeitung Ihrer Daten erfolgt auf Grundlage der DSGVO sowie weiterer eins
 Milbertshofener Platz 2  
 80809 München  
 Telefon: +49 176 61906287  
-E-Mail: [zeltlager-milbertshofen@gmx.de](mailto:zeltlager-milbertshofen@gmx.de)
+E-Mail: [zeltlager.milbertshofen@gmail.com](mailto:zeltlager.milbertshofen@gmail.com)
 
 ## Datenschutzbeauftragter 
 Ein Datenschutzbeauftragter wird nach §38 BDSG nicht benannt, da die Voraussetzungen hierfür nicht vorliegen.
