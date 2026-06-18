@@ -38,7 +38,7 @@ async function to_xlsx(name: string, sheets: Sheet[], refresh: () => Promise<voi
         const worksheet = XLSX.utils.json_to_sheet(rows.map(row => {
             const filteredRow: Record<string, any> = {};
             for (const [key, value] of Object.entries(row)) {
-                if (!(key in columnVisibility) || columnVisibility[key] === true) {
+                if (!(key in columnVisibility) || columnVisibility[key] === true || key === "name" || key === "sirname") {
                     filteredRow[key] = value;
                 }
             }
