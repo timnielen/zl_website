@@ -71,10 +71,15 @@ const table_name = "Registrations_" + new Date(runtimeConfig.public.REGISTRATION
 const { data: registrations, refresh } = await useAsyncData("getRegistrations", async () => {
     const { data, error } = await supabase.from(table_name)
         .select("*")
-        // .order("birthday", { ascending: true })
-    console.log(table_name, data)
+        .order("birthday", { ascending: true })
     if (error) throw error
-    return data
+    
+    const new_data = data.map((registration, index) => ({
+        ...registration,
+        number: index + 1
+    }))
+    console.log("registrations", new_data)
+    return new_data
 })
 
 const table = useTemplateRef('myTable')
@@ -97,7 +102,7 @@ const column_items = computed<DropdownMenuItem[]>((): DropdownMenuItem[] => {
 })
 
 
-type Registration = SQLSchema & { id: number, created_at: string, paid: boolean }
+type Registration = SQLSchema & { id: number, number: number, created_at: string, paid: boolean }
 function yesno(column: string) {
     return ({ row }: CellContext<Registration, unknown>) => {
         const color = row.getValue(column) ? 'success' : 'error';
@@ -127,7 +132,15 @@ function getHeader(label: string) {
 }
 
 const columns: TableColumn<Registration>[] = []
+columns.push(
+    {
+        accessorKey: 'number',
+        header: getHeader('Nr.'),
+        cell: ({ row }) => row.getValue('number')
+    }
+)
 for (const key in registrations.value?.[0] ?? {}) {
+    if (columns.find(c => c.accessorKey === key || c.id === key)) continue
     columns.push({
         accessorKey: key,
         header: getHeader(key)
@@ -153,13 +166,6 @@ setCell("created_at", ({ row }) => {
     })
 })
 
-setCell("birthday", ({ row }) => new Date(row.getValue('birthday')).toLocaleDateString('de-DE', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-    })
-)
-
 setBeforeCell("name", {
         id: "full_name",
         header: getHeader('Name'),
@@ -184,6 +190,29 @@ setBeforeCell("emergency_2_name", {
             return `${row.getValue("emergency_2_name")} (${row.getValue("emergency_2_relationship")}), ${row.getValue("emergency_2_phone_number")}, ${row.getValue("emergency_2_email")}`
         }
     }
+)
+
+setBeforeCell("birthday", {
+        id: "age",
+        header: getHeader('Alter'),
+        cell: ({ row }) => {
+            const birthday = new Date(row.getValue('birthday'))
+            const today = new Date()
+            let age = today.getFullYear() - birthday.getFullYear()
+            const m = today.getMonth() - birthday.getMonth()
+            if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
+                age--
+            }
+            return age
+        }
+    }
+)
+
+setCell("birthday", ({ row }) => new Date(row.getValue('birthday')).toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+    })
 )
 
 setCell("photos", ({ row }) => {
