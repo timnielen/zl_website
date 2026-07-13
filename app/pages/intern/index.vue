@@ -10,45 +10,46 @@
 
         <div class="grid w-full border-(--ui-border-accented) border rounded-lg">
             <div class="flex justify-between py-3.5 px-4 border-b  border-(--ui-border-accented)">
-                <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filtern..." :ui="{ trailing: 'pe-1' }">
-                    <template v-if="globalFilter?.length" #trailing>
-                        <UButton color="neutral" variant="link" size="sm" icon="i-material-symbols-close"
-                            aria-label="Clear input" @click="globalFilter = ''" />
-                    </template>
-                </UInput>
+                <div class="flex gap-2 items-center">
+                    <USelect v-model="selectedYear" :items="yearOptions" class="w-32" />
+                    <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filtern..." :ui="{ trailing: 'pe-1' }">
+                        <template v-if="globalFilter?.length" #trailing>
+                            <UButton color="neutral" variant="link" size="sm" icon="i-material-symbols-close"
+                                aria-label="Clear input" @click="clearFilter" />
+                        </template>
+                    </UInput>
+                    <UCheckbox label="Namen anpinnen" v-model="name_pinned"></UCheckbox>
+                </div>
                 <div class="flex gap-2">
                     <UDropdownMenu :items="column_items" :content="{ align: 'end' }" :ui="{ content: 'max-h-96' }">
                         <UButton label="Spalten" color="neutral" variant="subtle"
                             trailing-icon="i-lucide-chevron-down" />
                     </UDropdownMenu>
-                    <ToExcel name="Anmeldungen" :sheets="[{ name: 'Anmeldungen', rows: registrations, columnVisibility }]" :refresh="refresh"></ToExcel>
+                    <ToExcel name="Anmeldungen" :sheets="[{ name: 'Anmeldungen', rows: registrations ?? [], columnVisibility }]" :refresh="refresh"></ToExcel>
                 </div>
             </div>
 
+            <!-- <div class="flex justify-between py-3.5 px-4 border-b  border-(--ui-border-accented)">
+                
+            </div> -->
             <UTable ref="myTable" v-model:column-visibility="columnVisibility" v-model:column-pinning="columnPinning"
                 v-model:global-filter="globalFilter" :data="registrations || undefined" :columns="columns"/>
-            <div class="flex justify-between py-3.5 px-4 border-b  border-(--ui-border-accented)">
-                <UCheckbox label="Namen anpinnen" v-model="name_pinned"></UCheckbox>
-            </div>
         </div>
 
         <USeparator />
-        <Games></Games>
+        <Games :year="selectedYear"></Games>
         <USeparator />
-        <Scores></Scores>
+        <Scores :year="selectedYear"></Scores>
         <USeparator />
-        <ProseH2><ULink to="/intern/dish_service">Spüldienst</ULink></ProseH2>
+        <ProseH2><ULink :to="`/intern/dish_service/${selectedYear}`">Spüldienst</ULink></ProseH2>
     </TextSection>
 </template>
 
 <script setup lang="ts">
 import { UBadge, UButton, UCheckbox } from '#components'
-import type { DropdownMenuItem, TableColumn, } from '@nuxt/ui'
+import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
 import { createClient } from '@supabase/supabase-js'
-import type { SQLSchema } from '~~/types/registration'
 import type { CellContext, HeaderContext } from '@tanstack/vue-table'
-import { title, type variant } from 'valibot'
-import ConfirmationButton from '~/components/ConfirmationButton.vue'
 import { Games, Scores, ToExcel } from '#components'
 
 definePageMeta({
@@ -67,26 +68,36 @@ async function logOut() {
     loading.value = false
 }
 
-const table_name = "Registrations_" + new Date(runtimeConfig.public.REGISTRATION_END_DATE).getFullYear();
-const { data: registrations, refresh } = await useAsyncData("getRegistrations", async () => {
-    const { data, error } = await supabase.from(table_name)
-        .select("*")
-        .order("birthday", { ascending: true })
-    if (error) throw error
-    
-    const new_data = data.map((registration, index) => ({
-        ...registration,
-        number: index + 1
-    }))
-    console.log("registrations", new_data)
-    return new_data
+type Registration = Record<string, unknown> & { id: number, created_at: string, year: number, number: number }
+
+const selectedYear = ref(new Date().getFullYear())
+
+const { data: availableYears } = await useRegistrationYears()
+
+const yearOptions = computed(() => {
+    const years = new Set(availableYears.value ?? [])
+    years.add(selectedYear.value)
+    return [...years].sort((a, b) => b - a)
 })
+
+const { data: registrations, refresh } = await useAsyncData('getRegistrations', async () => {
+    const { data, error } = await supabase
+        .from('registrations_view')
+        .select('*')
+        .eq('year', selectedYear.value)
+        .order('birthday', { ascending: true })
+    if (error) throw error
+
+    return data.map((row, index) => {
+        const { data: details, ...persistent } = row as { data: Record<string, unknown> | null } & Record<string, unknown>
+        return { ...persistent, ...(details ?? {}), number: index + 1 } as Registration
+    })
+}, { watch: [selectedYear] })
 
 const table = useTemplateRef('myTable')
 
 const column_items = computed<DropdownMenuItem[]>((): DropdownMenuItem[] => {
     const columns = table.value?.tableApi.getAllColumns() ?? []
-    console.log(columns)
     return columns.filter((column) => column.getCanHide())
         .map((column) => ({
             label: column.id,
@@ -100,18 +111,6 @@ const column_items = computed<DropdownMenuItem[]>((): DropdownMenuItem[] => {
             }
         }))
 })
-
-
-type Registration = SQLSchema & { id: number, number: number, created_at: string, paid: boolean }
-function yesno(column: string) {
-    return ({ row }: CellContext<Registration, unknown>) => {
-        const color = row.getValue(column) ? 'success' : 'error';
-
-        return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-            row.getValue(column) ? "Ja" : "Nein"
-        )
-    }
-}
 
 function getHeader(label: string) {
     return ({ column }: HeaderContext<Registration, unknown>) => {
@@ -131,116 +130,34 @@ function getHeader(label: string) {
     }
 }
 
-const columns: TableColumn<Registration>[] = []
-columns.push(
-    {
-        accessorKey: 'number',
-        header: getHeader('Nr.'),
-        cell: ({ row }) => row.getValue('number')
-    }
-)
-for (const key in registrations.value?.[0] ?? {}) {
-    if (columns.find(c => c.accessorKey === key || c.id === key)) continue
-    columns.push({
-        accessorKey: key,
-        header: getHeader(key)
-    })
-}
-function setCell(key: string, cell: (context: CellContext<Registration, unknown>) => any) {
-    const column = columns.find(c => c.accessorKey === key)
-    if (column) column.cell = cell
-}
-function setBeforeCell(key: string, column: TableColumn<Registration>) {
-    const index = columns.findIndex(c => c.accessorKey === key)
-    if (index !== -1) columns.splice(index, 0, column)
+// Cells are formatted automatically, purely from the column's name/value shape.
+// No per-key configuration: a "_filename" column becomes a download button, a
+// boolean column becomes a Ja/Nein badge, and date/timestamp-shaped strings get
+// localized formatting. Anything else renders as-is.
+
+function isDateOnly(value: unknown): value is string {
+    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)
 }
 
-setCell("created_at", ({ row }) => {
-    return new Date(row.getValue('created_at')).toLocaleString('de-DE', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    })
-})
+function isTimestamp(value: unknown): value is string {
+    return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)
+}
 
-setBeforeCell("name", {
-        id: "full_name",
-        header: getHeader('Name'),
-        cell: ({ row }) => `${row.getValue('name')} ${row.getValue('sirname')}`
-    }
-)
-
-setBeforeCell("emergency_1_name", {
-        accessorKey: 'emergency1',
-        header: getHeader('Notfall1'),
-        cell: ({ row }) => {
-            console.log(row)
-            return `${row.getValue("emergency_1_name")} (${row.getValue("emergency_1_relationship")}), ${row.getValue("emergency_1_phone_number")}, ${row.getValue("emergency_1_email")}`
-        }
-    }
-)
-setBeforeCell("emergency_2_name", {
-        accessorKey: 'emergency2',
-        header: getHeader('Notfall2'),
-        cell: ({ row }) => {
-            console.log(row)
-            return `${row.getValue("emergency_2_name")} (${row.getValue("emergency_2_relationship")}), ${row.getValue("emergency_2_phone_number")}, ${row.getValue("emergency_2_email")}`
-        }
-    }
-)
-
-setBeforeCell("birthday", {
-        id: "age",
-        header: getHeader('Alter'),
-        cell: ({ row }) => {
-            const birthday = new Date(row.getValue('birthday'))
-            const today = new Date()
-            let age = today.getFullYear() - birthday.getFullYear()
-            const m = today.getMonth() - birthday.getMonth()
-            if (m < 0 || (m === 0 && today.getDate() < birthday.getDate())) {
-                age--
-            }
-            return age
-        }
-    }
-)
-
-setCell("birthday", ({ row }) => new Date(row.getValue('birthday')).toLocaleDateString('de-DE', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-    })
-)
-
-setCell("photos", ({ row }) => {
-    const color = {
-        'Ja, veröffentlichen': 'success' as const,
-        'Ja, NICHT veröffentlichen': 'neutral' as const,
-        'Nein': 'error' as const
-    }[row.getValue('photos') as string]
-
-    return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-        row.getValue('photos')
-    )
-})
-
-setCell("consent_filename", ({ row }) => {
-    const filename = row.getValue('consent_filename') as string;
+function downloadCell({ row, column }: CellContext<Registration, unknown>) {
+    const filename = row.getValue(column.id) as string
+    if (!filename) return null
     return h(UButton, {
-        variant: "ghost",
-        icon: "i-material-symbols-download",
+        variant: 'ghost',
+        icon: 'i-material-symbols-download',
         async onClick() {
-            const { data, error } = await supabase.storage.from("consent").download(filename)
+            const { data, error } = await supabase.storage.from('consent').download(filename)
             if (error) throw error
             const url = URL.createObjectURL(data)
 
             const a = document.createElement('a')
             a.href = url
-            a.target = "_blank"
-            a.download = filename // set desired filename
+            a.target = '_blank'
+            a.download = filename
             document.body.appendChild(a)
             a.click()
             a.remove()
@@ -248,54 +165,64 @@ setCell("consent_filename", ({ row }) => {
             URL.revokeObjectURL(url)
         }
     }, () => filename)
-})
+}
 
-setCell("paid", ({ row }) => {
-    const paid = row.getValue('paid') as boolean;
-    return h(ConfirmationButton, {
-        title: "Möchtest du den Status ändern?",
-        label_confirm: "Ändern",
-        label_cancel: "Abbrechen",
-        action: async () => {
-            const { data, error } = await supabase.from(table_name)
-                .update({ paid: !paid })
-                .eq('id', row.getValue('id') as number)
-            if (error) console.error(error)
-            await refresh()
+function booleanBadgeCell({ row, column }: CellContext<Registration, unknown>) {
+    const value = row.getValue(column.id) as boolean
+    return h(UBadge, { class: 'capitalize', variant: 'subtle', color: value ? 'success' : 'error' }, () => value ? 'Ja' : 'Nein')
+}
+
+function dateCell({ row, column }: CellContext<Registration, unknown>) {
+    const value = row.getValue(column.id) as string
+    if (!value) return ''
+    return new Date(value).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' })
+}
+
+function timestampCell({ row, column }: CellContext<Registration, unknown>) {
+    const value = row.getValue(column.id) as string
+    if (!value) return ''
+    return new Date(value).toLocaleString('de-DE', {
+        day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
+    })
+}
+
+function inferCell(key: string, sample: unknown) {
+    if (key.endsWith('_filename')) return downloadCell
+    if (typeof sample === 'boolean') return booleanBadgeCell
+    if (isDateOnly(sample)) return dateCell
+    if (isTimestamp(sample)) return timestampCell
+    return undefined
+}
+
+const columns = computed<TableColumn<Registration>[]>(() => {
+    const rows = registrations.value ?? []
+    const cols: TableColumn<Registration>[] = [
+        { accessorKey: 'number', header: getHeader('Nr.'), cell: ({ row }) => row.getValue('number') }
+    ]
+
+    const keys = new Set<string>()
+    for (const row of rows) {
+        for (const key of Object.keys(row)) {
+            if (key !== 'number') keys.add(key)
         }
-    }, () => h(UButton, {
-        label: paid ? "Ja" : "Nein",
-        color: paid ? "success" : "error",
-        variant: 'subtle',
-        size: "xs",
-        icon: "i-material-symbols-edit"
-    }))
+    }
+
+    for (const key of keys) {
+        const sample = rows.find((row) => row[key] !== null && row[key] !== undefined)?.[key]
+        const cell = inferCell(key, sample)
+        cols.push({ accessorKey: key, header: getHeader(key), ...(cell ? { cell } : {}) })
+    }
+
+    return cols
 })
-
-
 
 const columnVisibility = ref({
     id: false,
-    name: false,
-    sirname: false,
     created_at: false,
-    fitness: false,
-    group_activity_consent: false,
-    privacy_agreement: false,
-    disease_description: false,
-    vaccination_description: false,
-    emergency_1_name: false,
-    emergency_1_relationship: false,
-    emergency_1_phone_number: false,
-    emergency_1_email: false,
-    emergency_2_name: false,
-    emergency_2_relationship: false,
-    emergency_2_phone_number: false,
-    emergency_2_email: false,
 })
 const name_pinned = ref(true)
 const left_pinned = computed(() => {
-    return [name_pinned.value ? "full_name" : undefined]
+    return [name_pinned.value ? "name" : undefined]
 })
 const columnPinning = reactive({
     left: left_pinned,
@@ -303,5 +230,8 @@ const columnPinning = reactive({
 })
 
 const globalFilter = ref('')
+function clearFilter() {
+    globalFilter.value = ''
+}
 
 </script>

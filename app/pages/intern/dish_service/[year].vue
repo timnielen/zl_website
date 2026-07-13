@@ -1,8 +1,11 @@
 <template>
     <TextSection>
         <ULink to="/intern"><- Zurück zur Übersicht </ULink>
-                <ProseH1 class="text-primary-500">Spüldienst</ProseH1>
-                <p>Hier kannst du den Spüldienst für die Woche planen. 
+                <ProseH1 class="text-primary-500">Spüldienst {{ year }}</ProseH1>
+                <UFormField label="Jahr">
+                    <USelect :model-value="year" :items="yearOptions" @update:model-value="switchYear" class="w-32" />
+                </UFormField>
+                <p>Hier kannst du den Spüldienst für die Woche planen.
                     Ziehe Teilnehmer in die Slots, um sie zuzuweisen.
                     <br></br>
                     Benennung der Felder: Name (Alter) - Spüldienste (gesamt) - Spüldienste am jeweiligen Tag - Spüldienste zu jeweiliger Mahlzeit.
@@ -94,29 +97,44 @@ definePageMeta({
     middleware: ['auth']
 })
 
-const { data: participants, refresh: refresh_participants } = await useAsyncData("getParticipants", async () => {
-    const { data, error } = await supabase.from("numbered_participants")
+const route = useRoute()
+const year = computed(() => Number(route.params.year))
+
+const { data: availableYears } = await useRegistrationYears()
+const yearOptions = computed(() => {
+    const years = new Set(availableYears.value ?? [])
+    years.add(year.value)
+    return [...years].sort((a, b) => b - a)
+})
+function switchYear(newYear: number) {
+    navigateTo(`/intern/dish_service/${newYear}`)
+}
+
+const { data: participants } = await useAsyncData(`dish-service-participants-${year.value}`, async () => {
+    const { data, error } = await supabase.from("registrations")
         .select("id, name, sirname, gender, birthday")
-        .order("number", { ascending: true })
+        .eq("year", year.value)
+        .order("birthday", { ascending: true })
     if (error) throw error
     return data
-})
+}, { watch: [year] })
 
-const { data: assignment, refresh: refresh_assignment } = await useAsyncData("getDishServiceAssignment", async () => {
-    const { data, error } = await supabase.from("dish_service")
-        .select("participant, slot ")
+const { data: assignment, refresh: refresh_assignment } = await useAsyncData(`dish-service-assignment-${year.value}`, async () => {
+    const { data, error } = await supabase.from("dishes")
+        .select("participant, slot, registrations!inner(year)")
+        .eq("registrations.year", year.value)
         .order("slot")
     if (error) throw error
-    return data
-})
+    return data.map(({ participant, slot }) => ({ participant, slot }))
+}, { watch: [year] })
 
 
 function calculateAge(birthday: string) {
-    var ageDifMs = Date.now() - new Date(birthday);
+    var ageDifMs = Date.now() - new Date(birthday).getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
-function getAverageAge({ members }) {
+function getAverageAge({ members }: { members: any[] }) {
     return Math.round((members.reduce((total: number, { age }) => total + age, 0) / members.length) * 10) / 10
 }
 
@@ -138,7 +156,8 @@ const teams = computed(() => {
             const slot = i * slots.length + j
             const name = weekdays[i] + " - " + slots[j]
             const members = assignment.value?.filter(({ slot: s }) => s === slot)
-                .map(({ participant }) => p_slot_counts.value!.find(p => p.id === participant)!) || []
+                .map(({ participant }) => p_slot_counts.value!.find(p => p.id === participant))
+                .filter((p): p is NonNullable<typeof p> => p != null) || []
             members.sort((a, b) => new Date(a.birthday).getTime() - new Date(b.birthday).getTime())
             result.push({ name, slot, members })
         }
@@ -204,8 +223,11 @@ function onDrop(evt: DragEvent, slot: number) {
 
 
 async function save() {
+    // Scoped to this year's participants only — dishes is shared across all
+    // years, so a blanket delete would wipe other years' saved assignments.
+    const participantIds = participants.value?.map(p => p.id) ?? []
     {
-        const { error } = await supabase.from("dish_service").delete().gt("slot", -1)
+        const { error } = await supabase.from("dishes").delete().in("participant", participantIds)
         if (error) {
             toast.add({
                 title: "Fehler beim Löschen der alten Daten",
@@ -217,7 +239,7 @@ async function save() {
         }
     }
     {
-        const { error } = await supabase.from("dish_service").insert(assignment.value)
+        const { error } = await supabase.from("dishes").insert(assignment.value)
         if (error) {
             toast.add({
                 title: "Fehler beim Speichern der Daten",

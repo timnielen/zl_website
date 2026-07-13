@@ -5,23 +5,24 @@
 </template>
 
 <script setup lang="ts">
-import type { RegistrationCheckboxGroupConfig, RegistrationState } from '~~/types/registration'
+import { fieldDefs } from '~~/types/registration'
+import type { RegistrationStageElement, RegistrationState } from '~~/types/registration'
 
 const { config, state } = defineProps<{
-    config: RegistrationCheckboxGroupConfig
+    config: Extract<RegistrationStageElement, { kind: 'checkboxgroup' }>
     state: RegistrationState
 }>()
 
-const items = config.fields.map(f => ({ value: String(f.key), label: f.label }))
+const items = config.fields.map((key) => ({ value: key, label: fieldDefs[key].label ?? key }))
 
 const selectedKeys = computed(() =>
-    config.fields.filter(f => state[f.key] === true).map(f => String(f.key))
+    config.fields.filter((key) => state[key] === true)
 )
 
 function onUpdate(values: string[]) {
     const selected = new Set(values)
-    for (const field of config.fields) {
-        state[field.key] = selected.has(String(field.key)) as never
+    for (const key of config.fields) {
+        state[key] = selected.has(key)
     }
 }
 </script>

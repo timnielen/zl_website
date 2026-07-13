@@ -1,8 +1,8 @@
 <template>
     <TextSection>
         <ULink to="/intern"><- Zurück zur Übersicht </ULink>
-                <ProseH1 v-if="!props.game" class="text-primary-500">Spiel erstellen</ProseH1>
-                <ProseH1 v-else class="text-primary-500">{{ props.game }}</ProseH1>
+                <ProseH1 v-if="!existingGame" class="text-primary-500">Spiel erstellen</ProseH1>
+                <ProseH1 v-else class="text-primary-500">{{ existingGame.game }}</ProseH1>
                 <USeparator />
                 <UFormField label="Spielname" name="name">
                     <UInput v-model="game.name" placeholder="Fuchsjagd (max. 30 Zeichen)" />
@@ -20,7 +20,7 @@
                         Speichern</UButton>
                 </UFormField>
                 <UFormField>
-                    <UButton v-if="saved_games?.find(entry => entry.game === game.name)"
+                    <UButton v-if="existingGame"
                         icon="material-symbols:delete-forever" size="md" color="neutral" variant="solid" @click="remove"
                         :loading="deleting">
                         Löschen</UButton>
@@ -82,54 +82,65 @@
 import { createClient } from '@supabase/supabase-js'
 
 const props = defineProps<{
-    game?: String
+    gameId?: string
 }>()
 
+const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
 const supabase = createClient(runtimeConfig.public.SUPABASE_URL, runtimeConfig.public.SUPABASE_KEY)
 
 const toast = useToast()
 
 function calculateAge(birthday: string) {
-    var ageDifMs = Date.now() - new Date(birthday);
+    var ageDifMs = Date.now() - new Date(birthday).getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
 
-const { data: participants, refresh: refresh_participants } = await useAsyncData("getParticipants", async () => {
-    const { data, error } = await supabase.from("numbered_participants")
-        .select("id, name, sirname, gender, birthday")
-        .order("number", { ascending: true })
+// If editing an existing game, load it to get its name and its year (derived
+// from created_at, since games no longer carry a year column of their own).
+const { data: existingGame } = await useAsyncData(`game-${props.gameId ?? 'new'}`, async () => {
+    if (!props.gameId) return null
+    const { data, error } = await supabase.from('games')
+        .select('id, game, created_at')
+        .eq('id', props.gameId)
+        .single()
     if (error) throw error
     return data
+}, { watch: [() => props.gameId] })
+
+const year = computed(() => {
+    if (existingGame.value) return new Date(existingGame.value.created_at).getFullYear()
+    const queryYear = Number(route.query.year)
+    return Number.isFinite(queryYear) && queryYear > 0 ? queryYear : new Date().getFullYear()
 })
 
-const { data: saved_games, refresh: refresh_games } = await useAsyncData("getAvailableGames", async () => {
-    const { data, error } = await supabase.from("Teams")
-        .select("game, count()")
+const { data: participants } = await useAsyncData(`game-participants-${year.value}`, async () => {
+    const { data, error } = await supabase.from('registrations')
+        .select('id, name, sirname, gender, birthday')
+        .eq('year', year.value)
+        .order('birthday', { ascending: true })
     if (error) throw error
     return data
-})
+}, { watch: [year] })
 
 const game = reactive({
-    name: props.game,
+    name: existingGame.value?.game ?? '',
     num_teams: 1,
 })
 
-console.log(props.game)
-const { data: team_assignment } = await useAsyncData("getTeams", async () => {
-    if (!game.name) return null
-    const { data, error } = await supabase.from("Teams")
-        .select("player_id, team").eq("game", game.name)
+const { data: team_assignment } = await useAsyncData(`game-teams-${existingGame.value?.id ?? 'new'}`, async () => {
+    if (!existingGame.value) return null
+    const { data, error } = await supabase.from('teams')
+        .select('player_id, team').eq('game_id', existingGame.value.id)
     if (error) throw error
     return data
 })
 
-if (team_assignment.value) {
-    game.num_teams = Math.max(...team_assignment.value!.map(a => a.team)) + 1
+if (team_assignment.value?.length) {
+    game.num_teams = Math.max(...team_assignment.value.map(a => a.team)) + 1
 }
 
-console.log(team_assignment.value)
 const players = reactive(participants.value?.map(({ id, name, sirname, gender, birthday }) => {
     let team = team_assignment.value?.find(({ player_id }) => player_id === id)?.team
     if (team === undefined || team === null) {
@@ -141,24 +152,21 @@ const players = reactive(participants.value?.map(({ id, name, sirname, gender, b
     }
 }) || [])
 
-console.log(players)
-
 interface Team {
     id: number,
     players: Array<any>,
     score?: number
 }
 
-const { data: scores, refresh: refresh_scores } = await useAsyncData("getTeamScores", async () => {
-    if (!game.name) return null
-    const { data, error } = await supabase.from("team_scores")
-        .select("team, score").eq("game", game.name)
+const { data: scores, refresh: refresh_scores } = await useAsyncData(`game-scores-${existingGame.value?.id ?? 'new'}`, async () => {
+    if (!existingGame.value) return null
+    const { data, error } = await supabase.from('team_scores')
+        .select('team, score').eq('game_id', existingGame.value.id)
     if (error) throw error
     return data
 })
 
 const teams = computed(() => {
-    console.log(scores.value)
     let teams: Team[] = [];
     for (let id = 0; id < game.num_teams; id++) {
         teams.push({
@@ -180,8 +188,7 @@ const options_score = computed(() => {
     return options
 })
 async function setScore(team: number, score: any) {
-    await refresh_games()
-    if (!saved_games.value?.find(entry => entry.game === game.name)) {
+    if (!existingGame.value) {
         toast.add({
             title: "Fehlgeschlagen!",
             description: "Du musst das Spiel erst speichern",
@@ -190,42 +197,38 @@ async function setScore(team: number, score: any) {
         })
         return
     }
-    if (score == null) {
-        const { error } = await supabase.from("team_scores")
-            .delete()
-            .eq("game", game.name)
-            .eq("team", team)
-        if (error) {
+    const gameId = existingGame.value.id
+    const { error: deleteError } = await supabase.from("team_scores")
+        .delete()
+        .eq("game_id", gameId)
+        .eq("team", team)
+    if (deleteError) {
+        toast.add({
+            title: "Fehlgeschlagen!",
+            description: deleteError.message,
+            color: "error",
+            duration: 5000,
+        })
+        return
+    }
+    if (score !== null) {
+        const { error: insertError } = await supabase.from("team_scores")
+            .insert({ game_id: gameId, team, score })
+        if (insertError) {
             toast.add({
                 title: "Fehlgeschlagen!",
-                description: error.message,
+                description: insertError.message,
                 color: "error",
                 duration: 5000,
             })
-        } else
-            toast.add({
-                title: "Punkte gelöscht!",
-                color: "success",
-                duration: 1000,
-            })
-    } else {
-        const { error } = await supabase.from("team_scores")
-            .upsert({ game: game.name, team, score })
-        if (error) {
-            toast.add({
-                title: "Fehlgeschlagen!",
-                description: error.message,
-                color: "error",
-                duration: 5000,
-            })
-        } else {
-            toast.add({
-                title: "Punkte vergeben!",
-                color: "success",
-                duration: 1000,
-            })
+            return
         }
     }
+    toast.add({
+        title: score !== null ? "Punkte vergeben!" : "Punkte gelöscht!",
+        color: "success",
+        duration: 1000,
+    })
     await refresh_scores()
 }
 
@@ -243,7 +246,6 @@ function getRandomTeam() {
     // Normalize probabilities to be between 0 and 1
     // probabilities = probabilities.map(prob => Math.exp(prob));
     const total_probability = probabilities.reduce((a, b) => a + b, 0)
-    // console.log(age, probabilities)
 
     let random = Math.random() * total_probability;
     for (let i = 0; i < probabilities.length; i++) {
@@ -278,7 +280,7 @@ function onDrop(evt: DragEvent, team_id: number) {
 }
 
 const saving = ref(false)
-function saveError(error: any) {
+function saveError(error: string) {
     toast.add({
         title: "Speichern fehlgeschlagen!",
         description: error,
@@ -297,52 +299,58 @@ async function save() {
     }
     saving.value = true
     try {
-        await refresh_games()
-        if (saved_games.value?.find(entry => entry.game === game.name)) {
-            const confirmed = confirm(`Das Spiel "${game.name}" existiert bereits.\nWillst du es überschreiben?`)
-            if (!confirmed) return saving.value = false
-            else {
-                const result = await supabase.from("Teams")
-                    .delete().eq("game", game.name)
-                if (result.error) {
-                    saveError(result.error.message)
-                    saving.value = false;
-                    return
-                }
+        let gameId = existingGame.value?.id
+
+        if (gameId) {
+            const { error } = await supabase.from("games").update({ game: game.name }).eq("id", gameId)
+            if (error) {
+                saveError(error.message)
+                return
             }
+        } else {
+            const { data, error } = await supabase.from("games").insert({ game: game.name }).select("id").single()
+            if (error || !data) {
+                saveError(error?.message ?? "Unbekannter Fehler")
+                return
+            }
+            gameId = data.id
         }
-    } catch (error: any) {
-        saveError(error.message)
-        saving.value = false;
-        return
-    }
-    const { data, error } = await supabase.from("Teams")
-        .insert(players.map(({ id, team }) => ({
-            player_id: id,
-            game: game.name,
-            team
-        })))
-    if (!error) {
+
+        const { error: deleteError } = await supabase.from("teams").delete().eq("game_id", gameId)
+        if (deleteError) {
+            saveError(deleteError.message)
+            return
+        }
+
+        const { error: insertError } = await supabase.from("teams")
+            .insert(players.map(({ id, team }) => ({
+                player_id: id,
+                game_id: gameId,
+                team
+            })))
+        if (insertError) {
+            saveError(insertError.message)
+            return
+        }
+
         toast.add({
             title: 'Spiel gespeichert!',
             color: 'success',
             duration: 5000
         })
-    } else {
-        saveError(error.message)
-        saving.value = false;
+        await navigateTo(`/intern/edit_game/${gameId}`)
+    } finally {
+        saving.value = false
     }
-    await refresh_games()
-    return saving.value = false
-
 }
 
 const deleting = ref(false)
 async function remove() {
+    if (!existingGame.value) return
     if (!confirm(`Willst du "${game.name}" wirklich löschen?`)) return
     deleting.value = true
-    const { error } = await supabase.from("Teams")
-        .delete().eq("game", game.name)
+    const { error } = await supabase.from("games")
+        .delete().eq("id", existingGame.value.id)
     if (error) {
         toast.add({
             title: "Löschen fehlgeschlagen!",
@@ -350,36 +358,17 @@ async function remove() {
             color: "error",
             duration: 5000
         })
-    } else {
-        toast.add({
-            title: "Spiel gelöscht!",
-            color: "success",
-            duration: 1000,
-        })
-        const { error } = await supabase.from("team_scores")
-            .delete()
-            .eq("game", game.name)
-        if (error) {
-            toast.add({
-                title: "Fehlgeschlagen!",
-                description: error.message,
-                color: "error",
-                duration: 5000,
-            })
-        } else
-            toast.add({
-                title: "Punkte gelöscht!",
-                color: "success",
-                duration: 1000,
-            })
+        deleting.value = false
+        return
     }
-    await refresh_scores()
-    await refresh_games()
-    deleting.value = false;
+    toast.add({
+        title: "Spiel gelöscht!",
+        color: "success",
+        duration: 1000,
+    })
+    deleting.value = false
+    await navigateTo('/intern')
 }
-
-
-
 </script>
 
 <style lang="css" scoped>

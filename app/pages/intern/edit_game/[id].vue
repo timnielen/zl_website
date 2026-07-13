@@ -1,5 +1,5 @@
 <template>
-    <EditGame :game="route.params.game"></EditGame>
+    <EditGame :game-id="route.params.id as string"></EditGame>
 </template>
 <script setup lang="ts">
 import EditGame from '~/components/EditGame.vue';

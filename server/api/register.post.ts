@@ -1,7 +1,7 @@
 
 import { createClient } from '@supabase/supabase-js'
-import { file_schema, sql_schema } from '~~/types/registration'
-import type { SQLSchema } from '~~/types/registration'
+import { schema, persistentFields } from '~~/types/registration'
+import type { RegistrationState } from '~~/types/registration'
 import { getRegistrationPeriodFromRuntimeConfig, isRegistrationOpenAt } from '~~/utils/registration-period'
 import mail from 'nodemailer'
 import * as v from 'valibot'
@@ -29,13 +29,11 @@ const publicPath = process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : path.join(process.cwd(), 'public')
 
-type MultipartPart = NonNullable<Awaited<ReturnType<typeof readMultipartFormData>>>[number]
-
 function sanitizeFilename(filename: string) {
     return filename
         .normalize('NFD')
         .replace(/[̀-ͯ]/g, '')
-        .replace(/[^a-zA-Z0-9.-_]/g, '_')
+        .replace(/[^a-zA-Z0-9._-]/g, '_')
 }
 
 function withTimestamp(filename: string) {
@@ -45,17 +43,33 @@ function withTimestamp(filename: string) {
     return parts.join('.')
 }
 
+function throwInsertError(error: { code?: string } | null): never {
+    const isUndefinedTable = error?.code === '42P01'
+    throw createError({
+        statusCode: isUndefinedTable ? 503 : 500,
+        statusMessage: isUndefinedTable
+            ? 'Registration tables do not exist. Please contact the administrator.'
+            : "Couldn't insert data. Please try again later."
+    })
+}
+
+/** Reassembles the multipart body into one plain object: `_data` is parsed as JSON, every other part becomes a Blob under its own field name. */
 function extractParts(parts: NonNullable<Awaited<ReturnType<typeof readMultipartFormData>>>) {
-    let data: unknown = null
-    let consentPart: MultipartPart | null = null
+    const raw: Record<string, unknown> = {}
+    const filenames = new Map<string, string>()
 
     for (const part of parts) {
         if (!part?.name) continue
-        if (part.name === 'consent') consentPart = part
-        else if (part.name === 'data') data = JSON.parse(Buffer.from(part.data).toString('utf8'))
+
+        if (part.name === '_data') {
+            Object.assign(raw, JSON.parse(Buffer.from(part.data).toString('utf8')))
+        } else {
+            raw[part.name] = new Blob([new Uint8Array(part.data)], { type: part.type })
+            if (part.filename) filenames.set(part.name, part.filename)
+        }
     }
 
-    return { data, consentPart }
+    return { raw, filenames }
 }
 
 export default defineEventHandler(async (event) => {
@@ -74,63 +88,71 @@ export default defineEventHandler(async (event) => {
     if (!parts || parts.length === 0)
         throw createError({ statusCode: 400, statusMessage: 'Registration form data is incomplete' })
 
-    const { data, consentPart } = extractParts(parts)
+    const { raw, filenames } = extractParts(parts)
 
-    if (!data || typeof data !== 'object')
-        throw createError({ statusCode: 400, statusMessage: 'Missing data field' })
-
-    if (!consentPart?.type || !consentPart.data)
-        throw createError({ statusCode: 400, statusMessage: 'Consent file is missing' })
-
-    let consentBlob: Blob
+    let parsedRow: RegistrationState
     try {
-        consentBlob = new Blob([new Uint8Array(consentPart.data)], { type: consentPart.type })
-        v.parse(file_schema, { consent: consentBlob })
-    } catch (e) {
-        console.error(e)
-        throw createError({ statusCode: 400, statusMessage: "Consent file couldn't be read" })
-    }
-
-    const safeFilename = withTimestamp(sanitizeFilename(consentPart.filename ?? 'consent-upload'))
-    const yearlyFilename = `${registrationPeriod.registrationYear}/${safeFilename}`
-
-    const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('consent')
-        .upload(yearlyFilename, consentBlob)
-
-    if (uploadError || !uploadData?.path) {
-        console.error(uploadError)
-        throw createError({ statusCode: 500, statusMessage: "Couldn't upload file. Please try again later." })
-    }
-
-    let parsedRow: SQLSchema
-    try {
-        parsedRow = v.parse(sql_schema, { ...data, consent_filename: uploadData.path })
+        parsedRow = v.parse(schema, raw) as RegistrationState
     } catch (e) {
         console.error(e)
         throw createError({ statusCode: 400, statusMessage: 'Invalid or missing form data' })
     }
 
-    const tableName = `Registrations_${registrationPeriod.registrationYear}`
+    const persistent: RegistrationState = {}
+    const details: RegistrationState = {}
+    const filesToUpload: Record<string, Blob> = {}
 
-    const { error } = await supabase.from(tableName).insert(parsedRow)
-    if (error) {
-        console.error(error)
-        const isUndefinedTable = error.code === '42P01'
-        throw createError({
-            statusCode: isUndefinedTable ? 503 : 500,
-            statusMessage: isUndefinedTable
-                ? `Registration table for ${registrationPeriod.registrationYear} does not exist. Please contact the administrator.`
-                : "Couldn't insert data. Please try again later.",
-        })
+    for (const [key, value] of Object.entries(parsedRow)) {
+        if ((persistentFields as readonly string[]).includes(key)) persistent[key] = value
+        else if (value instanceof Blob) filesToUpload[key] = value
+        else details[key] = value
     }
+
+    for (const [key, blob] of Object.entries(filesToUpload)) {
+        const safeFilename = withTimestamp(sanitizeFilename(filenames.get(key) ?? `${key}-upload`))
+        const storagePath = `${registrationPeriod.registrationYear}/${key}_${safeFilename}`
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('consent')
+            .upload(storagePath, blob)
+
+        if (uploadError || !uploadData?.path) {
+            console.error(uploadError)
+            throw createError({ statusCode: 500, statusMessage: "Couldn't upload file. Please try again later." })
+        }
+
+        details[`${key}_filename`] = uploadData.path
+    }
+
+    const { data: registrationRow, error: registrationError } = await supabase
+        .from('registrations')
+        .insert(persistent)
+        .select('id')
+        .single()
+
+    if (registrationError || !registrationRow) {
+        console.error(registrationError)
+        throwInsertError(registrationError)
+    }
+
+    const { error: detailsError } = await supabase
+        .from('registration_details')
+        .insert({ id: registrationRow.id, data: details })
+
+    if (detailsError) {
+        console.error(detailsError)
+        await supabase.from('registrations').delete().eq('id', registrationRow.id)
+        throwInsertError(detailsError)
+    }
+
+    const fullRow: RegistrationState = { ...persistent, ...details }
 
     try {
         await transporter.sendMail({
             from: `"Orgateam Zeltlager" <${runtimeConfig.EMAIL}>`,
-            to: parsedRow.email,
+            to: String(fullRow.email),
             subject: `Bestätigung Anmeldung Zeltlager ${registrationPeriod.registrationYear}`,
-            text: generateEmailText(parsedRow, registrationPeriod.registrationYear),
+            text: generateEmailText(fullRow, registrationPeriod.registrationYear),
             attachments: [
                 { filename: '08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf', path: `${publicPath}/files/08_Reisebedingungen_fur_Kirchenstiftungen_11.01.2016-1.pdf` },
                 { filename: 'Packliste.pdf', path: `${publicPath}/files/Packliste.pdf` },
@@ -145,7 +167,7 @@ export default defineEventHandler(async (event) => {
     setResponseStatus(event, 201)
 })
 
-function generateEmailText(data: SQLSchema, registrationYear: number) {
+function generateEmailText(data: RegistrationState, registrationYear: number) {
     return `Liebe(r) ${data.name},
 
 hiermit bestätigen wir deine Anmeldung fürs Zeltlager ${registrationYear}. Wir freuen uns schon tierisch auf dich!

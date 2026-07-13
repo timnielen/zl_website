@@ -1,5 +1,5 @@
 <template>
-    <section class="page-section">
+    <section class="page-section grid gap-6">
         <h1 class="page-title">Anmeldung <span v-if="!registrationOpen">(geschlossen)</span></h1>
 
         <UStepper
@@ -27,9 +27,9 @@
                             <p v-if="element.description" class="row-description">{{ element.description }}</p>
                         </div>
                         <RegistrationFormField
-                            v-for="field in element.fields"
-                            :key="String(field.key)"
-                            :field="field"
+                            v-for="key in element.fields"
+                            :key="key"
+                            :field-key="key"
                             :state="state"
                         />
                         <!-- </UFormField> -->
@@ -37,7 +37,7 @@
 
                     <RegistrationCheckboxGroup v-else-if="element.kind === 'checkboxgroup'" :config="element" :state="state" />
 
-                    <RegistrationFormField v-else :field="element" :state="state" />
+                    <RegistrationFormField v-else :field-key="element.key" :class-name="element.className" :state="state" />
                 </template>
             </div>
 
@@ -61,8 +61,7 @@ import {
     getStageFieldKeys,
     registrationStages,
     schema,
-    type RegistrationState,
-    type Schema
+    type RegistrationState
 } from '~~/types/registration'
 
 useHead({
@@ -85,7 +84,7 @@ const currentStep = ref(0)
 const registrationPeriod = getRegistrationPeriodFromRuntimeConfig(runtimeConfig.public)
 const registrationOpen = computed(() => isRegistrationOpenAt(registrationPeriod.startDate, registrationPeriod.endDate))
 const state = reactive(defaultRegistrationState()) as RegistrationState
-const formState = state as unknown as Partial<Schema>
+const formState = state as unknown as Partial<RegistrationState>
 
 const isMobile = ref(false)
 onMounted(() => {
@@ -112,7 +111,7 @@ function validateStep(index: number, showToast = true) {
     const result = v.safeParse(schema, state)
     if (result.success) return true
 
-    const stageFieldKeys = new Set(getStageFieldKeys(stage, state))
+    const stageFieldKeys = new Set<string>(getStageFieldKeys(stage))
     const stageIssues = result.issues.filter((issue) => {
         const key = issue.path?.[0]?.key
         return typeof key === 'string' && stageFieldKeys.has(key)
@@ -157,7 +156,7 @@ function jumpToStep(value: string | number | undefined) {
     currentStep.value = index
 }
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<Record<string, unknown>>) {
     for (let stepIndex = 0; stepIndex < registrationStages.length; stepIndex++) {
         if (!validateStep(stepIndex, false)) {
             currentStep.value = stepIndex
@@ -170,21 +169,18 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         }
     }
 
-    const { consent, consent_filename: _cf, ...rowData } = event.data
-
-    if (!(consent instanceof Blob)) {
-        toast.add({
-            title: 'Anmeldung fehlgeschlagen!',
-            description: 'Bitte laden Sie die Einverständniserklärung hoch.',
-            color: 'error'
-        })
-        return
+    const rowData: Record<string, unknown> = {}
+    const files: Record<string, Blob> = {}
+    for (const [key, value] of Object.entries(event.data)) {
+        if (value instanceof Blob) files[key] = value
+        else rowData[key] = value
     }
 
     const formData = new FormData()
-    const uploadName = `${rowData.name}_${rowData.sirname}_einverstaendniserklaerung`
-    formData.append('consent', consent, uploadName)
-    formData.append('data', JSON.stringify(rowData))
+    for (const [key, blob] of Object.entries(files)) {
+        formData.append(key, blob, `${rowData.name}_${rowData.sirname}_${key}`)
+    }
+    formData.append('_data', JSON.stringify(rowData))
 
     loading.value = true
 
@@ -198,7 +194,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             ? 'Die Anmeldung konnte nicht abgeschlossen werden. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut.'
             : status === 423
             ? 'Die Anmeldung ist leider geschlossen. Versuchen Sie es während des Anmeldezeitraums erneut.'
-            : 'Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.'
+            : `Ein interner Fehler ist aufgetreten. Bitte versuchen Sie es später erneut. (${status})`
 
         toast.add({ title: 'Anmeldung fehlgeschlagen!', description, color: 'error' })
         loading.value = false
@@ -224,10 +220,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     @apply bg-white xl:mx-auto max-w-7xl px-8 py-12 rounded-xl shadow-xl my-8;
 }
 .page-title {
-    @apply text-primary-500 text-3xl md:text-5xl mb-6;
-}
-.stepper-separator {
-    @apply py-4;
+    @apply text-primary-500 text-3xl md:text-5xl;
 }
 .registration-form {
     @apply space-y-6;

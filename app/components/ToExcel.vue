@@ -6,7 +6,7 @@
 <script setup lang="ts">
 import XLSX from "xlsx";
 
-interface Sheet {
+export interface Sheet {
     name: string;
     rows: any[];
     columnVisibility?: Record<string, boolean>;
