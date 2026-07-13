@@ -218,7 +218,7 @@ const columns = computed<TableColumn<Registration>[]>(() => {
 
 const columnVisibility = ref({
     id: false,
-    created_at: false,
+    year: false
 })
 const name_pinned = ref(true)
 const left_pinned = computed(() => {
